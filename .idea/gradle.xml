@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/home/domain" />
             <option value="$PROJECT_DIR$/home/domainImpl" />
             <option value="$PROJECT_DIR$/home/network" />
+            <option value="$PROJECT_DIR$/home/persistence" />
             <option value="$PROJECT_DIR$/home/presentation" />
           </set>
         </option>

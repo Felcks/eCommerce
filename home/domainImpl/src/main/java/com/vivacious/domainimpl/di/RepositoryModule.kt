@@ -1,5 +1,7 @@
 package com.vivacious.domainimpl.di
 
+import com.vivacious.domainimpl.repositories.PokedexRepositoryImpl
+import com.vivacious.pokedex.domain.data_sources.PokedexLocalDataSource
 import com.vivacious.pokedex.domain.data_sources.PokedexRemoteDataSource
 import com.vivacious.pokedex.domain.repositories.PokedexRepository
 import dagger.Module
@@ -14,8 +16,9 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun providePokedexRepositoru(
-        service: PokedexRemoteDataSource,
+        pokedexRemoteDataSource: PokedexRemoteDataSource,
+        pokedexLocalDataSource: PokedexLocalDataSource,
     ): PokedexRepository {
-        return com.vivacious.domainimpl.repositories.PokedexRepositoryImpl(service)
+        return PokedexRepositoryImpl(pokedexRemoteDataSource, pokedexLocalDataSource)
     }
 }

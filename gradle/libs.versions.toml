@@ -26,6 +26,7 @@ mockk = "1.13.10"
 coroutines-test = "1.8.1-Beta"
 turbine = "1.1.0"
 androidx-palette = "1.0.0"
+room = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -86,6 +87,11 @@ coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", ve
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 androidx-palette = { module = "androidx.palette:palette", version.ref = "androidx-palette"}
+
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-annotation-processor = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-ksp = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

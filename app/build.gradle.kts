@@ -93,4 +93,5 @@ dependencies {
     implementation(project(":home:domain"))
     implementation(project(":home:domainImpl"))
     implementation(project(":home:network"))
+    implementation(project(":home:persistence"))
 }
