@@ -7,17 +7,24 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.sharp.ArrowBack
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,7 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.capitalize
@@ -54,6 +63,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     homeScreenViewModel: HomeScreenViewModel = hiltViewModel(),
     goToPokemonDetail: (pokemonUrl: String) -> Unit,
+    goToFavoriteList: () -> Unit,
 ) {
     val pokemons = homeScreenViewModel.pokemons.collectAsLazyPagingItems()
 
@@ -67,6 +77,16 @@ fun HomeScreen(
         topBar = {
             TopBar(
                 title = stringResource(id = R.string.home_scree_title),
+                icon = {
+                    IconButton(onClick = { goToFavoriteList() }) {
+                        Icon(
+                            Icons.Default.Star,
+                            contentDescription = "View favorites",
+                            modifier = modifier
+                                .wrapContentSize()
+                        )
+                    }
+                },
                 modifier = Modifier.padding(top = 48.dp, start = 32.dp)
             )
         },
@@ -104,7 +124,6 @@ fun HomeScreen(
                         }
                     }
                 }
-
 
 
                 pokemons.itemCount > 0 -> {
@@ -199,12 +218,16 @@ private fun PokemonCardPreview() {
 }
 
 @Composable
-fun TopBar(title: String, modifier: Modifier = Modifier) {
-    Row(modifier = modifier) {
+fun TopBar(title: String, icon: @Composable () -> Unit, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Text(
             text = title,
             fontSize = 28.sp
         )
+        icon()
     }
 
 }
@@ -213,7 +236,7 @@ fun TopBar(title: String, modifier: Modifier = Modifier) {
 @Composable
 fun TopBarPreview() {
     PokedexTheme {
-        TopBar(title = "Pokedex")
+        TopBar(title = "Pokedex", {})
     }
 }
 

@@ -14,13 +14,15 @@ fun NavController.navigateToHomeScreen(
 }
 
 fun NavGraphBuilder.homeScreen(
-    goToPokemonDetail: (pokemonUrl: String) -> Unit
+    goToPokemonDetail: (pokemonUrl: String) -> Unit,
+    goToFavoriteList: () -> Unit,
 ) {
     composable(
         HomeScreenNavigationRoute
     ) {
         HomeScreen(
-            goToPokemonDetail = goToPokemonDetail
+            goToPokemonDetail = goToPokemonDetail,
+            goToFavoriteList = goToFavoriteList,
         )
     }
 }
