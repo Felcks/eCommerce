@@ -1,10 +1,12 @@
 package com.vivacious.domainimpl.di
 
 import com.vivacious.domainimpl.usecases.AddFavoritePokemonUseCaseImpl
+import com.vivacious.domainimpl.usecases.GetFavoritePokemonsUseCaseImpl
 import com.vivacious.domainimpl.usecases.GetPokemonUseCaseImpl
 import com.vivacious.domainimpl.usecases.GetPokemonsUseCaseImpl
 import com.vivacious.pokedex.domain.repositories.PokedexRepository
 import com.vivacious.pokedex.domain.usecases.AddFavoritePokemonUseCase
+import com.vivacious.pokedex.domain.usecases.GetFavoritePokemonsUseCase
 import com.vivacious.pokedex.domain.usecases.GetPokemonUseCase
 import com.vivacious.pokedex.domain.usecases.GetPokemonsUseCase
 import dagger.Module
@@ -38,5 +40,13 @@ object UseCaseModule {
         repository: PokedexRepository,
     ): AddFavoritePokemonUseCase {
         return AddFavoritePokemonUseCaseImpl(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetFavoritePokemonsUseCase(
+        repository: PokedexRepository,
+    ): GetFavoritePokemonsUseCase {
+        return GetFavoritePokemonsUseCaseImpl(repository)
     }
 }

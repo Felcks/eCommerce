@@ -27,6 +27,10 @@ class PokedexRepositoryImpl @Inject constructor(
         return pokedexLocalDataSource.savePokemon(pokemon)
     }
 
+    override suspend fun getFavoritePokemons(): Flow<List<Pokemon>> {
+        return pokedexLocalDataSource.getFavoritePokemons()
+    }
+
     companion object {
         const val PAGE_SIZE = 20
     }

@@ -3,6 +3,7 @@ package com.vivacious.pokedex.home.persistence.di
 import android.content.Context
 import androidx.room.Room
 import com.vivacious.pokedex.home.persistence.database.AppDatabase
+import com.vivacious.pokedex.home.persistence.database.MIGRATION_1_2
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +23,9 @@ object AppDatabaseModule {
             appContext,
             AppDatabase::class.java,
             "pokedex-database"
-        ).build()
+        )
+            .addMigrations(MIGRATION_1_2)
+            .build()
     }
 
 }

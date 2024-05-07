@@ -1,12 +1,13 @@
 package com.vivacious.pokedex.domain.models
 
-interface Pokemon {
+interface Pokemon : PokemonSummary {
     val id: Int
-    val name: String
+    override val name: String
     val weight: Int
     val height: Int
-    val image: String
+    override val image: String
     val abilities: List<Ability>
     val types: List<Type>
     val status: List<Status>
+    override val url: String
 }

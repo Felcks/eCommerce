@@ -15,7 +15,8 @@ data class PokemonEntity(
     @ColumnInfo(name = "name") override val name: String,
     @ColumnInfo(name = "weight") override val weight: Int,
     @ColumnInfo(name = "height") override val height: Int,
-    @ColumnInfo(name = "image") override val image: String
+    @ColumnInfo(name = "image") override val image: String,
+    @ColumnInfo(name = "url") override val url: String,
 ) : Pokemon {
     override val abilities: List<Ability>
         get() = listOf()

@@ -14,13 +14,15 @@ fun NavController.navigateToFavoriteList(
 }
 
 fun NavGraphBuilder.favoriteList(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    goToPokemonDetail: (pokemonUrl: String) -> Unit
 ) {
     composable(
         FavoriteListNavigationRoute,
     ) {
         FavoriteListScreen(
-            onBackClick
+            onBackClick,
+            goToPokemonDetail,
         )
     }
 }

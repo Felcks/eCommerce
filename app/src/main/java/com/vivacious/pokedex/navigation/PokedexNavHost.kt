@@ -29,6 +29,11 @@ fun PokedexNavHost(modifier: Modifier = Modifier) {
             }
         )
         pokemonDetail(onBackClick = { navController.popBackStack() })
-        favoriteList(onBackClick = { navController.popBackStack() })
+        favoriteList(
+            onBackClick = { navController.popBackStack() },
+            goToPokemonDetail = {
+                navController.navigateToPokemonDetail(pokemonUrl = it)
+            },
+        )
     }
 }

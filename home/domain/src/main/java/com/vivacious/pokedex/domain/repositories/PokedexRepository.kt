@@ -6,8 +6,10 @@ import com.vivacious.pokedex.domain.models.PokemonSummary
 import com.vivacious.pokedex.domain.wrapper.Resource
 import kotlinx.coroutines.flow.Flow
 
-interface PokedexRepository {
+interface
+PokedexRepository {
     suspend fun getPokemons(): Flow<PagingData<PokemonSummary>>
     suspend fun getPokemon(pokemonId: String): Flow<Resource<Pokemon?>>
     suspend fun savePokemonAsFavorite(pokemon: Pokemon) : Flow<Boolean>
+    suspend fun getFavoritePokemons() : Flow<List<Pokemon>>
 }

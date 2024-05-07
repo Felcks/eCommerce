@@ -16,4 +16,8 @@ class PokedexLocalDataSourceImpl(
             emit(true)
         }
     }
+
+    override fun getFavoritePokemons(): Flow<List<Pokemon>> {
+        return appDatabase.pokedexDao().getAll()
+    }
 }

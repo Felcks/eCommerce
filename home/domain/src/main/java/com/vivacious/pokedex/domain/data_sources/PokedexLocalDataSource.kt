@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface PokedexLocalDataSource {
     fun savePokemon(pokemon: Pokemon) : Flow<Boolean>
+    fun getFavoritePokemons() : Flow<List<Pokemon>>
 }

@@ -10,5 +10,6 @@ fun Pokemon.toEntity() : PokemonEntity {
         weight = weight,
         height = height,
         image = image,
+        url = url,
     )
 }
