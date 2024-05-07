@@ -112,7 +112,11 @@ fun PokemonDetailScreen(
                 }
 
                 state.pokemon != null -> {
-                    PokemonDetail(state.pokemon!!, onBackClick)
+                    PokemonDetail(
+                        pokemon = state.pokemon!!,
+                        onAddFavoriteClick = { viewModel.handleScreenEvents(PokemonDetailEvent.AddPokemonAsFavorite) },
+                        onBackClick = onBackClick
+                    )
                 }
             }
         }
@@ -120,7 +124,12 @@ fun PokemonDetailScreen(
 }
 
 @Composable
-fun PokemonDetail(pokemon: Pokemon, onBackClick: () -> Unit, modifier: Modifier = Modifier) {
+fun PokemonDetail(
+    pokemon: Pokemon,
+    onBackClick: () -> Unit,
+    onAddFavoriteClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     var backgroundColor by remember { mutableStateOf(Color(147, 201, 172)) }
 
@@ -173,11 +182,12 @@ fun PokemonDetail(pokemon: Pokemon, onBackClick: () -> Unit, modifier: Modifier 
                     .heightIn(min = 300.dp)
                     .fillMaxWidth(),
                 onSuccess = { result ->
-                    val mutableBitmap = result.result.drawable.toBitmap(475, 475).copy(Bitmap.Config.RGBA_F16, false)
+                    val mutableBitmap = result.result.drawable.toBitmap(475, 475)
+                        .copy(Bitmap.Config.RGBA_F16, false)
                     val palette = Palette.from(mutableBitmap).generate()
-                     palette.swatches.firstOrNull()?.let {
-                         backgroundColor = Color(it.rgb)
-                     }
+                    palette.swatches.firstOrNull()?.let {
+                        backgroundColor = Color(it.rgb)
+                    }
                 },
             )
         }
@@ -239,6 +249,9 @@ fun PokemonDetail(pokemon: Pokemon, onBackClick: () -> Unit, modifier: Modifier 
             for (status in pokemon.status) {
                 StatusView(status.stat.name, status.baseStat)
             }
+        }
+        Button(onClick = { onAddFavoriteClick.invoke() }) {
+            Text("Add as favorite")
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.vivacious.pokedex.home.persistence.data_sources
 
-import androidx.room.Room
 import com.vivacious.pokedex.domain.data_sources.PokedexLocalDataSource
 import com.vivacious.pokedex.domain.models.Pokemon
 import com.vivacious.pokedex.home.persistence.database.AppDatabase
