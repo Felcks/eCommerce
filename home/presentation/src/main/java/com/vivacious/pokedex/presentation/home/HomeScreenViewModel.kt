@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,13 +27,22 @@ class HomeScreenViewModel @Inject constructor(
     private val _searchResults: MutableStateFlow<List<ProductSummary>> = MutableStateFlow(emptyList())
     val searchResults = _searchResults.asStateFlow()
 
+    // Flag para controlar se já carregou produtos inicialmente
+    private var hasLoadedInitialProducts = false
+
     fun handleScreenEvents(event: HomeScreenEvent) {
         when (event) {
             HomeScreenEvent.GetFreshProducts -> {
-                loadProducts()
+                if (!hasLoadedInitialProducts) {
+                    loadProducts()
+                    hasLoadedInitialProducts = true
+                }
             }
             HomeScreenEvent.LoadMoreProducts -> {
-                loadProducts()
+                // Não recarregar se já temos produtos
+                if (products.value == PagingData.empty<ProductSummary>()) {
+                    loadProducts()
+                }
             }
             is HomeScreenEvent.SearchProducts -> {
                 searchProducts(event.query)
@@ -42,9 +52,11 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun loadProducts() {
         viewModelScope.launch(Dispatchers.IO) {
-            getProductsUseCase().cachedIn(viewModelScope).collect {
-                _products.value = it
-            }
+            getProductsUseCase()
+                .cachedIn(viewModelScope)
+                .collectLatest {
+                    _products.value = it
+                }
         }
     }
 

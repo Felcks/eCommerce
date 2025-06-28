@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -84,8 +86,12 @@ fun HomeScreen(
     val products = homeScreenViewModel.products.collectAsLazyPagingItems()
     var searchQuery by remember { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
+    
+    // Preservar o estado do scroll
+    val gridState = rememberLazyGridState()
 
-    LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
+    // Só carregar produtos se não houver nenhum item carregado
+    LaunchedEffect(Unit) {
         if (products.itemCount == 0) {
             homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshProducts)
         }
@@ -136,7 +142,7 @@ fun HomeScreen(
             )
 
             when {
-                products.loadState.refresh is LoadState.Loading || isSearching -> {
+                products.loadState.refresh is LoadState.Loading && products.itemCount == 0 -> {
                     Row(
                         modifier = Modifier.fillMaxSize(),
                         horizontalArrangement = Arrangement.Center,
@@ -171,6 +177,7 @@ fun HomeScreen(
                     ProductList(
                         products = products,
                         onProductClick = goToProductDetail,
+                        gridState = gridState
                     )
                 }
 
@@ -199,6 +206,7 @@ fun HomeScreen(
 fun ProductList(
     products: LazyPagingItems<ProductSummary>,
     onProductClick: (productId: String) -> Unit,
+    gridState: LazyGridState = rememberLazyGridState(),
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -206,6 +214,7 @@ fun ProductList(
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
+        state = gridState,
         modifier = modifier
     ) {
         items(

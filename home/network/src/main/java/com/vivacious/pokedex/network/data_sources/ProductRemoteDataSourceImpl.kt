@@ -17,13 +17,25 @@ import javax.inject.Inject
 
 class ProductRemoteDataSourceImpl @Inject constructor(private val productService: ProductService) : ProductRemoteDataSource {
 
+    // Cache do Pager para preservar o estado
+    private var cachedPager: Pager<Int, ProductSummary>? = null
+
     override suspend fun getProducts(pageSize: Int): Flow<PagingData<ProductSummary>> {
-        val pagingConfig = PagingConfig(pageSize = pageSize)
-        return Pager(
-            config = pagingConfig,
-            initialKey = 0,
-            pagingSourceFactory = { ProductPagingSource(productService = productService, pageSize = pageSize) }
-        ).flow
+        // Reutilizar o Pager se já existir para preservar o estado
+        if (cachedPager == null) {
+            val pagingConfig = PagingConfig(
+                pageSize = pageSize,
+                enablePlaceholders = false,
+                prefetchDistance = 5
+            )
+            cachedPager = Pager(
+                config = pagingConfig,
+                initialKey = 0,
+                pagingSourceFactory = { ProductPagingSource(productService = productService, pageSize = pageSize) }
+            )
+        }
+        
+        return cachedPager!!.flow
     }
 
     override suspend fun getProduct(productId: String): Flow<Resource<Product?>> {
