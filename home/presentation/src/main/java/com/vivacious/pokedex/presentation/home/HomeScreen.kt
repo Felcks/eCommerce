@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -49,6 +53,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,6 +71,7 @@ import coil.compose.SubcomposeAsyncImage
 import com.vivacious.pokedex.domain.models.ProductSummary
 import com.vivacious.pokedex.core.presentation.theme.PokedexTheme
 import com.vivacious.pokedex.presentation.R
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -77,6 +83,7 @@ fun HomeScreen(
 ) {
     val products = homeScreenViewModel.products.collectAsLazyPagingItems()
     var searchQuery by remember { mutableStateOf("") }
+    var isSearching by remember { mutableStateOf(false) }
 
     LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
         if (products.itemCount == 0) {
@@ -84,12 +91,16 @@ fun HomeScreen(
         }
     }
 
+    // Debounced search
     LaunchedEffect(searchQuery) {
+        isSearching = true
+        delay(500) // 500ms debounce
         if (searchQuery.isNotEmpty()) {
             homeScreenViewModel.handleScreenEvents(HomeScreenEvent.SearchProducts(searchQuery))
         } else {
             homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshProducts)
         }
+        isSearching = false
     }
 
     Scaffold(
@@ -125,7 +136,7 @@ fun HomeScreen(
             )
 
             when {
-                products.loadState.refresh is LoadState.Loading -> {
+                products.loadState.refresh is LoadState.Loading || isSearching -> {
                     Row(
                         modifier = Modifier.fillMaxSize(),
                         horizontalArrangement = Arrangement.Center,
@@ -162,6 +173,23 @@ fun HomeScreen(
                         onProductClick = goToProductDetail,
                     )
                 }
+
+                else -> {
+                    // Empty state
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            if (searchQuery.isNotEmpty()) "Nenhum produto encontrado" else "Nenhum produto disponível",
+                            style = TextStyle(textAlign = TextAlign.Center),
+                            fontSize = 18.sp
+                        )
+                    }
+                }
             }
         }
     }
@@ -176,8 +204,8 @@ fun ProductList(
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
     ) {
         items(
@@ -189,7 +217,7 @@ fun ProductList(
                 ProductCard(
                     productSummary = product,
                     onProductClick = onProductClick,
-                    modifier = Modifier
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -212,30 +240,77 @@ fun ProductCard(
     onProductClick: (productId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(modifier = modifier
-        .background(Color.White)
-        .clickable {
-            onProductClick.invoke(productSummary.id.toString())
-        }) {
-        Column {
+    Card(
+        modifier = modifier
+            .background(Color.White)
+            .clickable {
+                onProductClick.invoke(productSummary.id.toString())
+            }
+            .heightIn(min = 280.dp, max = 280.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
             SubcomposeAsyncImage(
                 model = productSummary.thumbnail,
                 contentDescription = productSummary.title,
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                    .heightIn(min = 150.dp)
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
             )
-            Column(modifier = Modifier.padding(8.dp)) {
+            
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .weight(1f)
+            ) {
                 Text(
                     productSummary.title,
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                     maxLines = 2,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 40.dp, max = 40.dp),
+                    lineHeight = 20.sp
                 )
                 
-                // Rating with custom icon based on rating value
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 20.dp, max = 20.dp)
+                ) {
+                    Text(
+                        "R$ ${String.format("%.2f", productSummary.price)}",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2E7D32)
+                    )
+                    if (productSummary.discountPercentage > 0) {
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            "-${String.format("%.0f", productSummary.discountPercentage)}%",
+                            fontSize = 12.sp,
+                            color = Color.Red,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 20.dp, max = 20.dp)
+                ) {
                     val ratingIcon = when {
                         productSummary.rating < 3 -> Icons.Filled.StarBorder
                         productSummary.rating < 4 -> Icons.Filled.StarHalf
@@ -245,11 +320,13 @@ fun ProductCard(
                         imageVector = ratingIcon,
                         contentDescription = "Rating",
                         tint = Color(0xFFFFD700),
-                        modifier = Modifier.padding(end = 4.dp)
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                            .size(16.dp)
                     )
                     Text(
                         text = String.format("%.1f", productSummary.rating),
-                        fontSize = 14.sp
+                        fontSize = 12.sp
                     )
                 }
             }
@@ -294,6 +371,8 @@ val MOCK_PRODUCTS = listOf<ProductSummary>(
         override val images: List<String> = listOf("https://dummyjson.com/image/i/products/1/1.jpg")
         override val rating: Double = 4.69
         override val id: Int = 1
+        override val price: Double = 549.0
+        override val discountPercentage: Double = 12.96
     },
     object : ProductSummary {
         override val title: String = "iPhone X"
@@ -301,5 +380,7 @@ val MOCK_PRODUCTS = listOf<ProductSummary>(
         override val images: List<String> = listOf("https://dummyjson.com/image/i/products/2/1.jpg")
         override val rating: Double = 4.44
         override val id: Int = 2
+        override val price: Double = 899.0
+        override val discountPercentage: Double = 0.0
     }
 )

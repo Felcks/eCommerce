@@ -62,13 +62,14 @@ import com.vivacious.pokedex.presentation.R
 @Composable
 fun ProductDetailScreen(
     onBackClick: () -> Unit,
+    productId: String,
     modifier: Modifier = Modifier,
     viewModel: ProductDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
     LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
-        viewModel.handleScreenEvents(ProductDetailEvent.LoadProduct)
+        viewModel.handleScreenEvents(ProductDetailEvent.LoadProduct(productId))
     }
 
     Scaffold(
@@ -102,7 +103,7 @@ fun ProductDetailScreen(
                             fontSize = 18.sp
                         )
                         Box(modifier = Modifier.padding(vertical = 8.dp))
-                        Button(onClick = { viewModel.handleScreenEvents(ProductDetailEvent.LoadProduct) }) {
+                        Button(onClick = { viewModel.handleScreenEvents(ProductDetailEvent.LoadProduct(productId)) }) {
                             Text(stringResource(id = R.string.try_again))
                         }
                     }
@@ -209,19 +210,35 @@ fun ProductDetail(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(bottom = 8.dp)
             ) {
-                Text(
-                    "R$ ${String.format("%.2f", product.price)}",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2E7D32)
-                )
                 if (product.discountPercentage > 0) {
+                    // Original price (strikethrough)
+                    Text(
+                        "R$ ${String.format("%.2f", product.price)}",
+                        fontSize = 16.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    // Discounted price
+                    Text(
+                        "R$ ${String.format("%.2f", product.price * (1 - product.discountPercentage / 100))}",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2E7D32)
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "-${String.format("%.0f", product.discountPercentage)}%",
                         fontSize = 16.sp,
                         color = Color.Red,
                         fontWeight = FontWeight.Bold
+                    )
+                } else {
+                    // No discount
+                    Text(
+                        "R$ ${String.format("%.2f", product.price)}",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF2E7D32)
                     )
                 }
             }
@@ -289,6 +306,17 @@ fun ProductDetail(
                 Text("Adicionar aos favoritos")
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ProductDetailScreenPreview() {
+    PokedexTheme {
+        ProductDetailScreen(
+            onBackClick = {},
+            productId = "1"
+        )
     }
 }
 

@@ -4,8 +4,8 @@ interface Product : ProductSummary {
     override val id: Int
     override val title: String
     val description: String
-    val price: Double
-    val discountPercentage: Double
+    override val price: Double
+    override val discountPercentage: Double
     override val rating: Double
     val stock: Int
     val brand: String
@@ -20,4 +20,6 @@ interface ProductSummary {
     val thumbnail: String
     val images: List<String>
     val rating: Double
+    val price: Double
+    val discountPercentage: Double
 } 

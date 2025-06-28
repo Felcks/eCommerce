@@ -27,5 +27,7 @@ fun ProductResponse.toProductSummary(): ProductSummary {
         override val thumbnail: String = this@toProductSummary.thumbnail
         override val images: List<String> = this@toProductSummary.images
         override val rating: Double = this@toProductSummary.rating
+        override val price: Double = this@toProductSummary.price
+        override val discountPercentage: Double = this@toProductSummary.discountPercentage
     }
 } 

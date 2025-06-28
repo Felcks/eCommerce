@@ -23,8 +23,8 @@ class ProductDetailViewModel @Inject constructor(
 
     fun handleScreenEvents(event: ProductDetailEvent) {
         when (event) {
-            ProductDetailEvent.LoadProduct -> {
-                loadProduct()
+            is ProductDetailEvent.LoadProduct -> {
+                loadProduct(event.productId)
             }
             ProductDetailEvent.AddProductAsFavorite -> {
                 addProductAsFavorite()
@@ -32,11 +32,11 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadProduct() {
+    private fun loadProduct(productId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = _state.value.copy(loading = true, errorMessage = null)
             
-            getProductUseCase("1").collect { result ->
+            getProductUseCase(productId).collect { result ->
                 when (result) {
                     is com.vivacious.pokedex.domain.wrapper.Resource.Success -> {
                         _state.value = _state.value.copy(
