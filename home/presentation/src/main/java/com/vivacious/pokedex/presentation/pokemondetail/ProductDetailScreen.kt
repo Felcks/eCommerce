@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -151,6 +154,7 @@ fun ProductDetail(
             Row(
                 modifier = modifier
                     .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(top = 16.dp, start = 8.dp, end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -158,7 +162,7 @@ fun ProductDetail(
                 IconButton(
                     onClick = { onBackClick.invoke() },
                     modifier = modifier
-                        .wrapContentSize()
+                        .size(48.dp)
                 ) {
                     Icon(
                         Icons.AutoMirrored.Default.ArrowBack,
@@ -180,7 +184,8 @@ fun ProductDetail(
                 contentScale = ContentScale.Fit,
                 modifier = modifier
                     .heightIn(min = 300.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(top = 60.dp),
                 onSuccess = { result ->
                     val mutableBitmap = result.result.drawable.toBitmap(475, 475)
                         .copy(Bitmap.Config.RGBA_F16, false)
