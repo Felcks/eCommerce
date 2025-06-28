@@ -99,14 +99,15 @@ fun HomeScreen(
 
     // Debounced search com 0,5 segundos
     LaunchedEffect(searchQuery) {
-        isSearching = true
-        delay(500) // 500ms debounce
         if (searchQuery.isNotEmpty()) {
+            isSearching = true
+            delay(500) // 500ms debounce
             homeScreenViewModel.handleScreenEvents(HomeScreenEvent.SearchProducts(searchQuery))
+            isSearching = false
         } else {
-            homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshProducts)
+            // Se o campo estiver vazio, voltar para produtos normais imediatamente
+            homeScreenViewModel.handleScreenEvents(HomeScreenEvent.SearchProducts(""))
         }
-        isSearching = false
     }
 
     Scaffold(

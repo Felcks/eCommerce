@@ -42,7 +42,13 @@ class HomeScreenViewModel @Inject constructor(
                 }
             }
             is HomeScreenEvent.SearchProducts -> {
-                searchProducts(event.query)
+                if (event.query.isEmpty()) {
+                    // Se a query estiver vazia, voltar para produtos normais
+                    hasLoadedInitialProducts = false // Reset para forçar carregamento
+                    loadProducts()
+                } else {
+                    searchProducts(event.query)
+                }
             }
         }
     }

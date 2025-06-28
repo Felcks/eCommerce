@@ -23,6 +23,10 @@ class ProductRemoteDataSourceImpl @Inject constructor(private val productService
     private var lastSearchQuery: String? = null
 
     override suspend fun getProducts(pageSize: Int): Flow<PagingData<ProductSummary>> {
+        // Limpar cache de busca quando voltar para produtos normais
+        cachedSearchPager = null
+        lastSearchQuery = null
+        
         // Reutilizar o Pager se já existir para preservar o estado
         if (cachedPager == null) {
             val pagingConfig = PagingConfig(
