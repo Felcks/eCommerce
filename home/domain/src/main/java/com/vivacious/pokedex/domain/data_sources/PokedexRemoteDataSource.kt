@@ -8,5 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductRemoteDataSource {
     suspend fun getProducts(pageSize: Int): Flow<PagingData<ProductSummary>>
+    suspend fun searchProducts(query: String): Flow<PagingData<ProductSummary>>
     suspend fun getProduct(productId: String): Flow<Resource<Product?>>
 }

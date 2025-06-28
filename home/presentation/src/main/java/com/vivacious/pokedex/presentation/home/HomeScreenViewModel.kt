@@ -24,9 +24,6 @@ class HomeScreenViewModel @Inject constructor(
     private val _products: MutableStateFlow<PagingData<ProductSummary>> = MutableStateFlow(PagingData.empty())
     val products = _products.asStateFlow()
 
-    private val _searchResults: MutableStateFlow<List<ProductSummary>> = MutableStateFlow(emptyList())
-    val searchResults = _searchResults.asStateFlow()
-
     // Flag para controlar se já carregou produtos inicialmente
     private var hasLoadedInitialProducts = false
 
@@ -62,9 +59,11 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun searchProducts(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            searchProductsUseCase(query).collect { results ->
-                _searchResults.value = results
-            }
+            searchProductsUseCase(query)
+                .cachedIn(viewModelScope)
+                .collectLatest { searchResults ->
+                    _products.value = searchResults
+                }
         }
     }
 }

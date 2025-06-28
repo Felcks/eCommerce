@@ -15,6 +15,11 @@ interface ProductService {
         @Query(value = "skip") skip: Int
     ): Response<ProductsPageResponse>
 
+    @GET("products/search")
+    suspend fun searchProducts(
+        @Query(value = "q") query: String
+    ): Response<ProductsPageResponse>
+
     @GET("products/{productId}")
     suspend fun getProduct(
         @Path(value = "productId") productId: String,

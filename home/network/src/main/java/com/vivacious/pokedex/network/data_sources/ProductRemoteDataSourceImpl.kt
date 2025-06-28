@@ -19,6 +19,8 @@ class ProductRemoteDataSourceImpl @Inject constructor(private val productService
 
     // Cache do Pager para preservar o estado
     private var cachedPager: Pager<Int, ProductSummary>? = null
+    private var cachedSearchPager: Pager<Int, ProductSummary>? = null
+    private var lastSearchQuery: String? = null
 
     override suspend fun getProducts(pageSize: Int): Flow<PagingData<ProductSummary>> {
         // Reutilizar o Pager se já existir para preservar o estado
@@ -36,6 +38,25 @@ class ProductRemoteDataSourceImpl @Inject constructor(private val productService
         }
         
         return cachedPager!!.flow
+    }
+
+    override suspend fun searchProducts(query: String): Flow<PagingData<ProductSummary>> {
+        // Se a query mudou, criar um novo Pager para busca
+        if (lastSearchQuery != query) {
+            val pagingConfig = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+                prefetchDistance = 5
+            )
+            cachedSearchPager = Pager(
+                config = pagingConfig,
+                initialKey = 0,
+                pagingSourceFactory = { ProductSearchPagingSource(productService = productService, query = query) }
+            )
+            lastSearchQuery = query
+        }
+        
+        return cachedSearchPager!!.flow
     }
 
     override suspend fun getProduct(productId: String): Flow<Resource<Product?>> {

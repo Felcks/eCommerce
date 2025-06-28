@@ -97,7 +97,7 @@ fun HomeScreen(
         }
     }
 
-    // Debounced search
+    // Debounced search com 0,5 segundos
     LaunchedEffect(searchQuery) {
         isSearching = true
         delay(500) // 500ms debounce
@@ -135,6 +135,14 @@ fun HomeScreen(
                 onValueChange = { searchQuery = it },
                 placeholder = { Text("Buscar produtos...") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                trailingIcon = {
+                    if (isSearching && searchQuery.isNotEmpty()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp
+                        )
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -149,6 +157,26 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         CircularProgressIndicator()
+                    }
+                }
+
+                isSearching && searchQuery.isNotEmpty() -> {
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator()
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                "Buscando por \"$searchQuery\"...",
+                                fontSize = 16.sp,
+                                color = Color.Gray
+                            )
+                        }
                     }
                 }
 
@@ -182,7 +210,6 @@ fun HomeScreen(
                 }
 
                 else -> {
-                    // Empty state
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -191,7 +218,7 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            if (searchQuery.isNotEmpty()) "Nenhum produto encontrado" else "Nenhum produto disponível",
+                            if (searchQuery.isNotEmpty()) "Nenhum produto encontrado para \"$searchQuery\"" else "Nenhum produto disponível",
                             style = TextStyle(textAlign = TextAlign.Center),
                             fontSize = 18.sp
                         )

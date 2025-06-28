@@ -19,12 +19,12 @@ class ProductRepositoryImpl @Inject constructor(
         return productRemoteDataSource.getProducts(PAGE_SIZE)
     }
 
-    override suspend fun getProduct(productId: String): Flow<Resource<Product?>> {
-        return productRemoteDataSource.getProduct(productId)
+    override suspend fun searchProducts(query: String): Flow<PagingData<ProductSummary>> {
+        return productRemoteDataSource.searchProducts(query)
     }
 
-    override suspend fun searchProducts(query: String): Flow<List<ProductSummary>> {
-        return productLocalDataSource.searchProducts(query)
+    override suspend fun getProduct(productId: String): Flow<Resource<Product?>> {
+        return productRemoteDataSource.getProduct(productId)
     }
 
     override suspend fun saveProductAsFavorite(product: Product): Flow<Boolean> {

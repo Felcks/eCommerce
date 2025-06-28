@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {
     suspend fun getProducts(): Flow<PagingData<ProductSummary>>
+    suspend fun searchProducts(query: String): Flow<PagingData<ProductSummary>>
     suspend fun getProduct(productId: String): Flow<Resource<Product?>>
-    suspend fun searchProducts(query: String): Flow<List<ProductSummary>>
     suspend fun saveProductAsFavorite(product: Product): Flow<Boolean>
     suspend fun getFavoriteProducts(): Flow<List<Product>>
 }
