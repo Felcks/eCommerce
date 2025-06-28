@@ -1,42 +1,44 @@
-# Pokedex App
+# E-commerce App
 
-Android app simulating a Pokedex: showing a list of Pokemons and their details.
-The project is estructured with Hexagonal Architecture, MVVM, Jetpack Compose, Retrofit, Multi module and more.
+Aplicativo Android simulando uma loja online: mostrando uma lista de produtos e seus detalhes.
+O projeto é estruturado com Arquitetura Hexagonal, MVVM, Jetpack Compose, Retrofit, Multi módulo e mais.
 
 * * *
 
-* ## What has been done:
-  * List of Pokemons fetched from the api. [endpoint](https://pokeapi.co/api/v2/pokemon)
-  * Loading indicator when waiting API response.
-  * Handling errors (e.g. If there is no connection)
-  * Pokemon detail screen showing more info about the pokemon, such as its Weight, Height, Base Stats, Types, etc.
-  * Pagination on the list of Pokemons.
+* ## O que foi implementado:
+  * Lista de produtos buscada da API DummyJSON. [endpoint](https://dummyjson.com/products)
+  * Indicador de carregamento ao aguardar resposta da API.
+  * Tratamento de erros (ex: Se não há conexão)
+  * Tela de detalhes do produto mostrando mais informações sobre o produto, como preço, desconto, estoque, rating, etc.
+  * Paginação na lista de produtos.
+  * Busca em tempo real por nome ou descrição do produto.
+  * Ícones customizados por categoria de rating: <3, 3–4, >4
 
-* ## What are the key concepts of this project:
-  * Hexagonal Architecture
+* ## Quais são os conceitos-chave deste projeto:
+  * Arquitetura Hexagonal
   * Jetpack Compose
-  * Multi Module project
+  * Projeto Multi Módulo
   * Jetpack Compose Navigation
   * ViewModel
 
 
-* ## What libraries has been used:
-  * Retrofit - Interface and client to the API, has a good integration with Kotlin Coroutines
-  * OkHttp - To give support to Retrofit
-  * Gson - Converts JSON to objects and objects to JSON
-  * Jetpack ViewModel - To support reactive states
-  * Kotlin Coroutines - To make asynchronous calls
-  * Dagger/Hilt - Dependency injection
-  * Compose Coil - To load images
-  * Mockk - create mocked objects when testing
-  * JUnit - Tests
+* ## Quais bibliotecas foram utilizadas:
+  * Retrofit - Interface e cliente para a API, tem boa integração com Kotlin Coroutines
+  * OkHttp - Para dar suporte ao Retrofit
+  * Gson - Converte JSON para objetos e objetos para JSON
+  * Jetpack ViewModel - Para suportar estados reativos
+  * Kotlin Coroutines - Para fazer chamadas assíncronas
+  * Dagger/Hilt - Injeção de dependência
+  * Compose Coil - Para carregar imagens
+  * Mockk - criar objetos mockados quando testando
+  * JUnit - Testes
 
 * * *
-* ## Why Hexagonal Architecture?
-    * To create a flow of dependencies pointing to inwards (from Modules to the Domain). So our domain is free from dependencies and we can focus on business logic without worrying about Android technical stuff.
+* ## Por que Arquitetura Hexagonal?
+    * Para criar um fluxo de dependências apontando para dentro (dos Módulos para o Domínio). Assim nosso domínio fica livre de dependências e podemos focar na lógica de negócio sem nos preocupar com coisas técnicas do Android.
       ![Hexagonal Architecture](images/hexagonal_architecture.png)
 
-* ## Demonstration
+* ## Demonstração
 *  ![Home Screen](images/image_0.png)
 *  ![Bulbasaur detail](images/image_1.png)
 *  ![Wartortle detail](images/image_2.png)

@@ -4,11 +4,11 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class PokedexRetrofit
+annotation class ProductRetrofit
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class PokedexOkHttpClient
+annotation class ProductOkHttpClient
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)

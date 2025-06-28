@@ -1,17 +1,17 @@
 package com.vivacious.domainimpl.usecases
 
 import androidx.paging.PagingData
-import com.vivacious.pokedex.domain.models.PokemonSummary
-import com.vivacious.pokedex.domain.repositories.PokedexRepository
-import com.vivacious.pokedex.domain.usecases.GetPokemonsUseCase
+import com.vivacious.pokedex.domain.models.ProductSummary
+import com.vivacious.pokedex.domain.repositories.ProductRepository
+import com.vivacious.pokedex.domain.usecases.GetProductsUseCase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetPokemonsUseCaseImpl @Inject constructor(
-    private val pokedexRepository: PokedexRepository
-) : GetPokemonsUseCase {
+class GetProductsUseCaseImpl @Inject constructor(
+    private val productRepository: ProductRepository
+) : GetProductsUseCase {
 
-    override suspend fun invoke(): Flow<PagingData<PokemonSummary>> {
-        return pokedexRepository.getPokemons()
+    override suspend fun invoke(): Flow<PagingData<ProductSummary>> {
+        return productRepository.getProducts()
     }
 }

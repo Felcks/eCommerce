@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.0-alpha06"
+agp = "8.5.2"
 kotlin = "1.9.22"
 coreKtx = "1.2.0"
 junit = "4.13.2"
@@ -27,6 +27,7 @@ coroutines-test = "1.8.1-Beta"
 turbine = "1.1.0"
 androidx-palette = "1.0.0"
 room = "2.6.1"
+compose-animation = "1.6.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -92,6 +93,8 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-annotation-processor = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ksp = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+
+compose-animation = { module = "androidx.compose.animation:animation", version.ref = "compose-animation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

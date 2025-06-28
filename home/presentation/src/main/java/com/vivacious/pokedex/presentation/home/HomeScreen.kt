@@ -17,18 +17,28 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.filled.StarHalf
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,7 +63,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.SubcomposeAsyncImage
-import com.vivacious.pokedex.domain.models.PokemonSummary
+import com.vivacious.pokedex.domain.models.ProductSummary
 import com.vivacious.pokedex.core.presentation.theme.PokedexTheme
 import com.vivacious.pokedex.presentation.R
 import kotlinx.coroutines.flow.flowOf
@@ -62,14 +72,23 @@ import kotlinx.coroutines.flow.flowOf
 fun HomeScreen(
     modifier: Modifier = Modifier,
     homeScreenViewModel: HomeScreenViewModel = hiltViewModel(),
-    goToPokemonDetail: (pokemonUrl: String) -> Unit,
+    goToProductDetail: (productId: String) -> Unit,
     goToFavoriteList: () -> Unit,
 ) {
-    val pokemons = homeScreenViewModel.pokemons.collectAsLazyPagingItems()
+    val products = homeScreenViewModel.products.collectAsLazyPagingItems()
+    var searchQuery by remember { mutableStateOf("") }
 
     LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
-        if (pokemons.itemCount == 0) {
-            homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshPokemons)
+        if (products.itemCount == 0) {
+            homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshProducts)
+        }
+    }
+
+    LaunchedEffect(searchQuery) {
+        if (searchQuery.isNotEmpty()) {
+            homeScreenViewModel.handleScreenEvents(HomeScreenEvent.SearchProducts(searchQuery))
+        } else {
+            homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshProducts)
         }
     }
 
@@ -93,8 +112,20 @@ fun HomeScreen(
         modifier = modifier.fillMaxSize()
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
+            // Search Bar
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                placeholder = { Text("Buscar produtos...") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(12.dp)
+            )
+
             when {
-                pokemons.loadState.refresh is LoadState.Loading -> {
+                products.loadState.refresh is LoadState.Loading -> {
                     Row(
                         modifier = Modifier.fillMaxSize(),
                         horizontalArrangement = Arrangement.Center,
@@ -104,7 +135,7 @@ fun HomeScreen(
                     }
                 }
 
-                pokemons.loadState.refresh is LoadState.Error -> {
+                products.loadState.refresh is LoadState.Error -> {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -113,23 +144,22 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            (pokemons.loadState.refresh as LoadState.Error).error.message
+                            (products.loadState.refresh as LoadState.Error).error.message
                                 ?: "Unexpected error",
                             style = TextStyle(textAlign = TextAlign.Center),
                             fontSize = 18.sp
                         )
                         Box(modifier = Modifier.padding(vertical = 8.dp))
-                        Button(onClick = { homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshPokemons) }) {
+                        Button(onClick = { homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshProducts) }) {
                             Text(stringResource(id = R.string.try_again))
                         }
                     }
                 }
 
-
-                pokemons.itemCount > 0 -> {
-                    PokemonList(
-                        pokemons = pokemons,
-                        onPokemonClick = goToPokemonDetail,
+                products.itemCount > 0 -> {
+                    ProductList(
+                        products = products,
+                        onProductClick = goToProductDetail,
                     )
                 }
             }
@@ -137,11 +167,10 @@ fun HomeScreen(
     }
 }
 
-
 @Composable
-fun PokemonList(
-    pokemons: LazyPagingItems<PokemonSummary>,
-    onPokemonClick: (pokemonUrl: String) -> Unit,
+fun ProductList(
+    products: LazyPagingItems<ProductSummary>,
+    onProductClick: (productId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -152,14 +181,14 @@ fun PokemonList(
         modifier = modifier
     ) {
         items(
-            count = pokemons.itemCount,
-            key = pokemons.itemKey { it.hashCode() },
+            count = products.itemCount,
+            key = products.itemKey { it.hashCode() },
         ) { index: Int ->
-            val pokemon = pokemons[index]
-            if (pokemon != null) {
-                PokemonCard(
-                    pokemonSummary = pokemon,
-                    onPokemonClick = onPokemonClick,
+            val product = products[index]
+            if (product != null) {
+                ProductCard(
+                    productSummary = product,
+                    onProductClick = onProductClick,
                     modifier = Modifier
                 )
             }
@@ -169,51 +198,70 @@ fun PokemonList(
 
 @Preview
 @Composable
-private fun PokemonListPreview() {
+private fun ProductListPreview() {
     MaterialTheme {
-        PokemonList(
-            pokemons = flowOf(PagingData.from(MOCK_POKEDEX)).collectAsLazyPagingItems(),
-            onPokemonClick = {})
+        ProductList(
+            products = flowOf(PagingData.from(MOCK_PRODUCTS)).collectAsLazyPagingItems(),
+            onProductClick = {})
     }
 }
 
 @Composable
-fun PokemonCard(
-    pokemonSummary: PokemonSummary,
-    onPokemonClick: (pokemonUrl: String) -> Unit,
+fun ProductCard(
+    productSummary: ProductSummary,
+    onProductClick: (productId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(modifier = modifier
         .background(Color.White)
         .clickable {
-            onPokemonClick.invoke(pokemonSummary.url)
+            onProductClick.invoke(productSummary.id.toString())
         }) {
         Column {
             SubcomposeAsyncImage(
-                model = pokemonSummary.image,
-                contentDescription = pokemonSummary.name,
+                model = productSummary.thumbnail,
+                contentDescription = productSummary.title,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
-                    .clip(CircleShape.copy(all = CornerSize(16.dp)))
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .heightIn(min = 150.dp)
             )
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Column(modifier = Modifier.padding(8.dp)) {
                 Text(
-                    pokemonSummary.name.capitalize(Locale.current),
-                    fontSize = 22.sp,
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    productSummary.title,
+                    fontSize = 16.sp,
+                    maxLines = 2,
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
+                
+                // Rating with custom icon based on rating value
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    val ratingIcon = when {
+                        productSummary.rating < 3 -> Icons.Filled.StarBorder
+                        productSummary.rating < 4 -> Icons.Filled.StarHalf
+                        else -> Icons.Default.Star
+                    }
+                    Icon(
+                        imageVector = ratingIcon,
+                        contentDescription = "Rating",
+                        tint = Color(0xFFFFD700),
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    Text(
+                        text = String.format("%.1f", productSummary.rating),
+                        fontSize = 14.sp
+                    )
+                }
             }
-
         }
     }
 }
 
 @Preview
 @Composable
-private fun PokemonCardPreview() {
+private fun ProductCardPreview() {
     PokedexTheme {
-        PokemonCard(MOCK_POKEDEX.first(), onPokemonClick = {})
+        ProductCard(MOCK_PRODUCTS.first(), onProductClick = {})
     }
 }
 
@@ -229,33 +277,29 @@ fun TopBar(title: String, icon: @Composable () -> Unit, modifier: Modifier = Mod
         )
         icon()
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
 fun TopBarPreview() {
     PokedexTheme {
-        TopBar(title = "Pokedex", {})
+        TopBar(title = "E-commerce", {})
     }
 }
 
-
-val MOCK_POKEDEX = listOf<PokemonSummary>(
-    object : PokemonSummary {
-        override val name: String
-            get() = "bulbasaur"
-        override val url: String
-            get() = "https://pokeapi.co/api/v2/pokemon/1/"
-        override val image: String
-            get() = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+val MOCK_PRODUCTS = listOf<ProductSummary>(
+    object : ProductSummary {
+        override val title: String = "iPhone 9"
+        override val thumbnail: String = "https://dummyjson.com/image/i/products/1/thumbnail.jpg"
+        override val images: List<String> = listOf("https://dummyjson.com/image/i/products/1/1.jpg")
+        override val rating: Double = 4.69
+        override val id: Int = 1
     },
-    object : PokemonSummary {
-        override val name: String
-            get() = "charmander"
-        override val url: String
-            get() = "https://pokeapi.co/api/v2/pokemon/4/"
-        override val image: String
-            get() = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"
+    object : ProductSummary {
+        override val title: String = "iPhone X"
+        override val thumbnail: String = "https://dummyjson.com/image/i/products/2/thumbnail.jpg"
+        override val images: List<String> = listOf("https://dummyjson.com/image/i/products/2/1.jpg")
+        override val rating: Double = 4.44
+        override val id: Int = 2
     }
 )

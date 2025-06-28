@@ -2,9 +2,9 @@ package com.vivacious.domainimpl.repositories
 
 import androidx.paging.PagingData
 import app.cash.turbine.test
-import com.vivacious.pokedex.domain.data_sources.PokedexRemoteDataSource
-import com.vivacious.pokedex.domain.models.Pokemon
-import com.vivacious.pokedex.domain.models.PokemonSummary
+import com.vivacious.pokedex.domain.data_sources.ProductRemoteDataSource
+import com.vivacious.pokedex.domain.models.Product
+import com.vivacious.pokedex.domain.models.ProductSummary
 import com.vivacious.pokedex.domain.wrapper.Resource
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -17,66 +17,66 @@ import org.junit.Before
 import org.junit.Test
 
 
-class PokedexRepositoryImplTest {
+class ProductRepositoryImplTest {
 
-    private lateinit var mockPokedexRemoteDataSource: PokedexRemoteDataSource
-    private lateinit var sut : PokedexRepositoryImpl
+    private lateinit var mockPokedexRemoteDataSource: ProductRemoteDataSource
+    private lateinit var sut : ProductRepositoryImpl
 
     @Before
     fun setup() {
-        mockPokedexRemoteDataSource = mockk<PokedexRemoteDataSource>()
-        sut = PokedexRepositoryImpl(mockPokedexRemoteDataSource)
+        mockPokedexRemoteDataSource = mockk<ProductRemoteDataSource>()
+        sut = ProductRepositoryImpl(mockPokedexRemoteDataSource, mockk())
     }
 
     @Test
-    fun `GIVEN no parameters WHEN getPokemons() THEN returns correctly` () = runTest {
-        val expected = mockk<PagingData<PokemonSummary>>()
-        coEvery {  mockPokedexRemoteDataSource.getPokemons(PokedexRepositoryImpl.PAGE_SIZE) } returns flowOf(expected)
+    fun `GIVEN no parameters WHEN getProducts() THEN returns correctly` () = runTest {
+        val expected = mockk<PagingData<ProductSummary>>()
+        coEvery {  mockPokedexRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) } returns flowOf(expected)
 
-        sut.getPokemons().test {
+        sut.getProducts().test {
             assertEquals(expected, awaitItem())
-            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getPokemons(PokedexRepositoryImpl.PAGE_SIZE) }
+            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) }
             awaitComplete()
         }
     }
 
     @Test
-    fun `GIVEN error on dataSource WHEN getPokemons() THEN throws error` () = runTest {
+    fun `GIVEN error on dataSource WHEN getProducts() THEN throws error` () = runTest {
         val expected = Throwable()
-        coEvery {  mockPokedexRemoteDataSource.getPokemons(PokedexRepositoryImpl.PAGE_SIZE) } returns flow {
+        coEvery {  mockPokedexRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) } returns flow {
             throw expected
         }
 
-        sut.getPokemons().test {
-            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getPokemons(PokedexRepositoryImpl.PAGE_SIZE) }
+        sut.getProducts().test {
+            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) }
             assertEquals(expected, awaitError())
         }
     }
 
     @Test
-    fun `GIVEN pokemonId WHEN getPokemon() THEN returns correctly` () = runTest {
-        val expected = mockk<Resource<Pokemon>>()
+    fun `GIVEN pokemonId WHEN getProduct() THEN returns correctly` () = runTest {
+        val expected = mockk<Resource<Product>>()
         val pokemonId = "pokemonId"
 
-        coEvery {  mockPokedexRemoteDataSource.getPokemon(pokemonId) } returns flowOf(expected)
+        coEvery {  mockPokedexRemoteDataSource.getProduct(pokemonId) } returns flowOf(expected)
 
-        sut.getPokemon(pokemonId).test {
+        sut.getProduct(pokemonId).test {
             assertEquals(expected, awaitItem())
-            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getPokemon(pokemonId) }
+            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getProduct(pokemonId) }
             awaitComplete()
         }
     }
 
     @Test
-    fun `GIVEN error on dataSource WHEN getPokemon() THEN throws error` () = runTest {
+    fun `GIVEN error on dataSource WHEN getProduct() THEN throws error` () = runTest {
         val expected = Throwable()
         val pokemonId = "pokemonId"
-        coEvery {  mockPokedexRemoteDataSource.getPokemon(pokemonId) } returns flow {
+        coEvery {  mockPokedexRemoteDataSource.getProduct(pokemonId) } returns flow {
             throw expected
         }
 
-        sut.getPokemon(pokemonId).test {
-            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getPokemon(pokemonId) }
+        sut.getProduct(pokemonId).test {
+            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getProduct(pokemonId) }
             assertEquals(expected, awaitError())
         }
     }

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="home_scree_title">Pokedex</string>
-    <string name="try_again">Try again</string>
-    <string name="weight">Weight</string>
-    <string name="height">Height</string>
-    <string name="unexpected_error_message">Unexpected error</string>
-    <string name="favorite_list_screen_title">Favorite Pokemons</string>
+    <string name="home_scree_title">E-commerce</string>
+    <string name="try_again">Tentar novamente</string>
+    <string name="weight">Peso</string>
+    <string name="height">Altura</string>
+    <string name="unexpected_error_message">Erro inesperado</string>
+    <string name="favorite_list_screen_title">Produtos Favoritos</string>
+    <string name="catch_pokemon">Adicionar aos Favoritos</string>
 </resources>

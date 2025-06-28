@@ -1,9 +1,11 @@
 package com.vivacious.pokedex.domain.data_sources
 
-import com.vivacious.pokedex.domain.models.Pokemon
+import com.vivacious.pokedex.domain.models.Product
+import com.vivacious.pokedex.domain.models.ProductSummary
 import kotlinx.coroutines.flow.Flow
 
-interface PokedexLocalDataSource {
-    fun savePokemon(pokemon: Pokemon) : Flow<Boolean>
-    fun getFavoritePokemons() : Flow<List<Pokemon>>
+interface ProductLocalDataSource {
+    fun saveProduct(product: Product): Flow<Boolean>
+    fun getFavoriteProducts(): Flow<List<Product>>
+    fun searchProducts(query: String): Flow<List<ProductSummary>>
 }

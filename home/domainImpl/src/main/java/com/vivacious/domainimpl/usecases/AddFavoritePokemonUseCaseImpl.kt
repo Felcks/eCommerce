@@ -1,15 +1,16 @@
 package com.vivacious.domainimpl.usecases
 
-import com.vivacious.pokedex.domain.models.Pokemon
-import com.vivacious.pokedex.domain.repositories.PokedexRepository
-import com.vivacious.pokedex.domain.usecases.AddFavoritePokemonUseCase
+import com.vivacious.pokedex.domain.models.Product
+import com.vivacious.pokedex.domain.repositories.ProductRepository
+import com.vivacious.pokedex.domain.usecases.AddFavoriteProductUseCase
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class AddFavoritePokemonUseCaseImpl(
-    private val repository: PokedexRepository,
-) : AddFavoritePokemonUseCase {
+class AddFavoriteProductUseCaseImpl @Inject constructor(
+    private val repository: ProductRepository,
+) : AddFavoriteProductUseCase {
 
-    override suspend fun invoke(pokemon: Pokemon): Flow<Boolean> {
-        return repository.savePokemonAsFavorite(pokemon)
+    override suspend fun invoke(product: Product): Flow<Boolean> {
+        return repository.saveProductAsFavorite(product)
     }
 }

@@ -1,9 +1,6 @@
 package com.vivacious.pokedex.presentation.pokemondetail
 
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,11 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -40,13 +40,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,20 +55,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.palette.graphics.Palette
 import coil.compose.SubcomposeAsyncImage
-import com.vivacious.pokedex.domain.models.Pokemon
 import com.vivacious.pokedex.core.presentation.theme.PokedexTheme
+import com.vivacious.pokedex.domain.models.Product
 import com.vivacious.pokedex.presentation.R
 
 @Composable
-fun PokemonDetailScreen(
+fun ProductDetailScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: PokemonDetailViewModel = hiltViewModel(),
+    viewModel: ProductDetailViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
     LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
-        viewModel.handleScreenEvents(PokemonDetailEvent.LoadPokemon)
+        viewModel.handleScreenEvents(ProductDetailEvent.LoadProduct)
     }
 
     Scaffold(
@@ -105,16 +102,16 @@ fun PokemonDetailScreen(
                             fontSize = 18.sp
                         )
                         Box(modifier = Modifier.padding(vertical = 8.dp))
-                        Button(onClick = { viewModel.handleScreenEvents(PokemonDetailEvent.LoadPokemon) }) {
+                        Button(onClick = { viewModel.handleScreenEvents(ProductDetailEvent.LoadProduct) }) {
                             Text(stringResource(id = R.string.try_again))
                         }
                     }
                 }
 
-                state.pokemon != null -> {
-                    PokemonDetail(
-                        pokemon = state.pokemon!!,
-                        onAddFavoriteClick = { viewModel.handleScreenEvents(PokemonDetailEvent.AddPokemonAsFavorite) },
+                state.product != null -> {
+                    ProductDetail(
+                        product = state.product!!,
+                        onAddFavoriteClick = { viewModel.handleScreenEvents(ProductDetailEvent.AddProductAsFavorite) },
                         onBackClick = onBackClick
                     )
                 }
@@ -124,8 +121,8 @@ fun PokemonDetailScreen(
 }
 
 @Composable
-fun PokemonDetail(
-    pokemon: Pokemon,
+fun ProductDetail(
+    product: Product,
     onBackClick: () -> Unit,
     onAddFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -133,7 +130,9 @@ fun PokemonDetail(
 
     var backgroundColor by remember { mutableStateOf(Color(147, 201, 172)) }
 
-    Column {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ) {
         Box(
             modifier = modifier
                 .clip(
@@ -169,15 +168,15 @@ fun PokemonDetail(
                     )
                 }
                 Text(
-                    "#${pokemon.id}",
+                    "#${product.id}",
                     fontSize = 22.sp,
                     color = Color.White,
                 )
             }
             SubcomposeAsyncImage(
-                model = pokemon.image,
-                contentDescription = pokemon.name,
-                contentScale = ContentScale.Inside,
+                model = product.images.firstOrNull() ?: product.thumbnail,
+                contentDescription = product.title,
+                contentScale = ContentScale.Fit,
                 modifier = modifier
                     .heightIn(min = 300.dp)
                     .fillMaxWidth(),
@@ -191,167 +190,128 @@ fun PokemonDetail(
                 },
             )
         }
-        Spacer(modifier = Modifier.padding(top = 16.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Text(
-                pokemon.name.capitalize(Locale.current),
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        Spacer(modifier = Modifier.padding(top = 8.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            for (type in pokemon.types) {
-                val color: String = elementColors[type.name] ?: "#777777"
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(50))
-                        .background(Color(android.graphics.Color.parseColor(color)))
-                        .padding(horizontal = 32.dp, vertical = 2.dp)
-                ) {
-                    Text(type.name, color = Color.White)
-                }
-            }
-        }
-        Spacer(modifier = Modifier.padding(vertical = 16.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text((pokemon.weight / 10.0).toString() + " KG", fontSize = 22.sp)
-                Text(stringResource(id = R.string.weight))
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text((pokemon.height / 10.0).toString() + " M", fontSize = 22.sp)
-                Text(stringResource(id = R.string.height))
-            }
-        }
-        Spacer(modifier = Modifier.padding(vertical = 16.dp))
+        
         Column(
-            modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp)
+                .padding(16.dp)
         ) {
+            // Title
+            Text(
+                product.title,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            
+            // Price and Discount
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                modifier = Modifier.padding(bottom = 8.dp)
             ) {
-                Text("Base Stats", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    "R$ ${String.format("%.2f", product.price)}",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF2E7D32)
+                )
+                if (product.discountPercentage > 0) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "-${String.format("%.0f", product.discountPercentage)}%",
+                        fontSize = 16.sp,
+                        color = Color.Red,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
-            Spacer(modifier = Modifier.padding(vertical = 4.dp))
-            for (status in pokemon.status) {
-                StatusView(status.stat.name, status.baseStat)
+            
+            // Rating
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "Rating",
+                    tint = Color(0xFFFFD700),
+                    modifier = Modifier.padding(end = 4.dp)
+                )
+                Text(
+                    text = String.format("%.1f", product.rating),
+                    fontSize = 16.sp
+                )
             }
-        }
-        Button(onClick = { onAddFavoriteClick.invoke() }) {
-            Text("Add as favorite")
-        }
-    }
-}
-
-@Composable
-fun StatusView(name: String, value: Int, modifier: Modifier = Modifier) {
-    val statReference = statMap[name] ?: StatusReference(name, 150, Color.Magenta)
-
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
-    ) {
-        Box(modifier = Modifier.width(48.dp)) {
-            Text(statReference.name.uppercase())
-        }
-        Spacer(modifier = Modifier.padding(horizontal = 8.dp))
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .background(Color.LightGray)
-                .fillMaxWidth()
-                .height(16.dp)
-        ) {
-            val percent = (value * 100) / statReference.maxValue
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .background(statReference.color)
-                    .fillMaxWidth(fraction = percent * 0.01f)
-                    .height(16.dp),
+            
+            // Stock
+            Text(
+                "Estoque: ${product.stock} unidades",
+                fontSize = 16.sp,
+                color = if (product.stock > 0) Color(0xFF2E7D32) else Color.Red,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            
+            // Brand and Category
+            Row(
+                modifier = Modifier.padding(bottom = 8.dp)
+            ) {
+                Text(
+                    "Marca: ${product.brand}",
+                    fontSize = 14.sp,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    "Categoria: ${product.category}",
+                    fontSize = 14.sp,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            
+            // Description
+            Text(
+                "Descrição:",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
-                "${value}/${statReference.maxValue}",
-                color = Color.White,
-                fontSize = 12.sp,
-                textAlign = TextAlign.Start,
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
-                    lineHeightStyle = LineHeightStyle(
-                        alignment = LineHeightStyle.Alignment.Center,
-                        trim = LineHeightStyle.Trim.None
-                    )
-                ),
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .wrapContentHeight()
+                product.description,
+                fontSize = 16.sp,
+                lineHeight = 24.sp
             )
+            
+            Spacer(modifier = Modifier.padding(vertical = 16.dp))
+            
+            Button(
+                onClick = { onAddFavoriteClick.invoke() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Adicionar aos favoritos")
+            }
         }
     }
 }
 
 @Preview
 @Composable
-private fun StatusViewPreview() {
+private fun ProductDetailPreview() {
     PokedexTheme {
-        StatusView(name = "hp", value = 100)
+        ProductDetail(
+            product = object : Product {
+                override val id: Int = 1
+                override val title: String = "iPhone 9"
+                override val description: String = "An apple mobile which is nothing like apple"
+                override val price: Double = 549.0
+                override val discountPercentage: Double = 12.96
+                override val rating: Double = 4.69
+                override val stock: Int = 94
+                override val brand: String = "Apple"
+                override val category: String = "smartphones"
+                override val thumbnail: String = "https://dummyjson.com/image/i/products/1/thumbnail.jpg"
+                override val images: List<String> = listOf("https://dummyjson.com/image/i/products/1/1.jpg")
+            },
+            onBackClick = {},
+            onAddFavoriteClick = {}
+        )
     }
-}
-
-val statMap = mapOf(
-    "hp" to StatusReference.HP(),
-    "attack" to StatusReference.ATK(),
-    "defense" to StatusReference.DEF(),
-    "speed" to StatusReference.SPD(),
-    "special-attack" to StatusReference.SATK(),
-    "special-defense" to StatusReference.SDEF(),
-)
-
-open class StatusReference(val name: String, val maxValue: Int, val color: Color) {
-    class HP : StatusReference("HP", 100, Color(214, 56, 69))
-    class ATK : StatusReference("ATK", 150, Color(253, 166, 41))
-    class DEF : StatusReference("DEF", 150, Color(0, 144, 234))
-    class SPD : StatusReference("SPD", 150, Color(144, 175, 198))
-    class SATK : StatusReference("SATK", 150, Color(157, 40, 155))
-    class SDEF : StatusReference("SDEF", 150, Color(17, 68, 68))
-}
-
-val elementColors = mapOf(
-    "normal" to "#A8A77A",
-    "grass" to "#7AC74C",
-    "fire" to "#EE8130",
-    "water" to "#6390F0",
-    "electric" to "#F7D02C",
-    "grass" to "#7AC74C",
-    "ice" to "#96D9D6",
-    "fighting" to "#C22E28",
-    "poison" to "#A33EA1",
-    "ground" to "#E2BF65",
-    "flying" to "#A98FF3",
-    "psychic" to "#F95587",
-    "bug" to "#A6B91A",
-    "rock" to "#B6A136",
-    "ghost" to "#735797",
-    "dragon" to "#6F35FC",
-    "dark:" to "#705746",
-    "steel:" to "#B7B7CE",
-    "fairy" to "#D685AD",
-
-    )
+} 

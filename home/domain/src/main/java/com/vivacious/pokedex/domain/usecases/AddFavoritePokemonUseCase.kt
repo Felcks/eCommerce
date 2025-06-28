@@ -1,8 +1,8 @@
 package com.vivacious.pokedex.domain.usecases
 
-import com.vivacious.pokedex.domain.models.Pokemon
+import com.vivacious.pokedex.domain.models.Product
 import kotlinx.coroutines.flow.Flow
 
-interface AddFavoritePokemonUseCase {
-    suspend operator fun invoke(pokemon: Pokemon) : Flow<Boolean>
+interface AddFavoriteProductUseCase {
+    suspend operator fun invoke(product: Product): Flow<Boolean>
 }

@@ -8,8 +8,8 @@ import com.vivacious.pokedex.presentation.favoritelist.favoriteList
 import com.vivacious.pokedex.presentation.favoritelist.navigateToFavoriteList
 import com.vivacious.pokedex.presentation.home.HomeScreenNavigationRoute
 import com.vivacious.pokedex.presentation.home.homeScreen
-import com.vivacious.pokedex.presentation.pokemondetail.navigateToPokemonDetail
-import com.vivacious.pokedex.presentation.pokemondetail.pokemonDetail
+import com.vivacious.pokedex.presentation.pokemondetail.navigateToProductDetail
+import com.vivacious.pokedex.presentation.pokemondetail.productDetail
 
 @Composable
 fun PokedexNavHost(modifier: Modifier = Modifier) {
@@ -21,18 +21,18 @@ fun PokedexNavHost(modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         homeScreen(
-            goToPokemonDetail = {
-                navController.navigateToPokemonDetail(pokemonUrl = it)
+            goToProductDetail = {
+                navController.navigateToProductDetail(productId = it)
             },
             goToFavoriteList = {
                 navController.navigateToFavoriteList()
             }
         )
-        pokemonDetail(onBackClick = { navController.popBackStack() })
+        productDetail(onBackClick = { navController.popBackStack() })
         favoriteList(
             onBackClick = { navController.popBackStack() },
-            goToPokemonDetail = {
-                navController.navigateToPokemonDetail(pokemonUrl = it)
+            goToProductDetail = {
+                navController.navigateToProductDetail(productId = it)
             },
         )
     }

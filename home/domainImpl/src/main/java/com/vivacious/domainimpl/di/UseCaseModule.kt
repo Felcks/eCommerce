@@ -1,14 +1,16 @@
 package com.vivacious.domainimpl.di
 
-import com.vivacious.domainimpl.usecases.AddFavoritePokemonUseCaseImpl
-import com.vivacious.domainimpl.usecases.GetFavoritePokemonsUseCaseImpl
-import com.vivacious.domainimpl.usecases.GetPokemonUseCaseImpl
-import com.vivacious.domainimpl.usecases.GetPokemonsUseCaseImpl
-import com.vivacious.pokedex.domain.repositories.PokedexRepository
-import com.vivacious.pokedex.domain.usecases.AddFavoritePokemonUseCase
-import com.vivacious.pokedex.domain.usecases.GetFavoritePokemonsUseCase
-import com.vivacious.pokedex.domain.usecases.GetPokemonUseCase
-import com.vivacious.pokedex.domain.usecases.GetPokemonsUseCase
+import com.vivacious.domainimpl.usecases.AddFavoriteProductUseCaseImpl
+import com.vivacious.domainimpl.usecases.GetFavoriteProductsUseCaseImpl
+import com.vivacious.domainimpl.usecases.GetProductUseCaseImpl
+import com.vivacious.domainimpl.usecases.GetProductsUseCaseImpl
+import com.vivacious.domainimpl.usecases.SearchProductsUseCaseImpl
+import com.vivacious.pokedex.domain.repositories.ProductRepository
+import com.vivacious.pokedex.domain.usecases.AddFavoriteProductUseCase
+import com.vivacious.pokedex.domain.usecases.GetFavoriteProductsUseCase
+import com.vivacious.pokedex.domain.usecases.GetProductUseCase
+import com.vivacious.pokedex.domain.usecases.GetProductsUseCase
+import com.vivacious.pokedex.domain.usecases.SearchProductsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,33 +22,41 @@ import javax.inject.Singleton
 object UseCaseModule {
     @Provides
     @Singleton
-    fun provideGetPokemonsUseCase(
-        repository: PokedexRepository,
-    ): GetPokemonsUseCase {
-        return GetPokemonsUseCaseImpl(repository)
+    fun provideGetProductsUseCase(
+        repository: ProductRepository,
+    ): GetProductsUseCase {
+        return GetProductsUseCaseImpl(repository)
     }
 
     @Provides
     @Singleton
-    fun provideGetPokemonUseCase(
-        repository: PokedexRepository,
-    ): GetPokemonUseCase {
-        return GetPokemonUseCaseImpl(repository)
+    fun provideGetProductUseCase(
+        repository: ProductRepository,
+    ): GetProductUseCase {
+        return GetProductUseCaseImpl(repository)
     }
 
     @Provides
     @Singleton
-    fun provideAddFavoritePokemonUseCase(
-        repository: PokedexRepository,
-    ): AddFavoritePokemonUseCase {
-        return AddFavoritePokemonUseCaseImpl(repository)
+    fun provideSearchProductsUseCase(
+        repository: ProductRepository,
+    ): SearchProductsUseCase {
+        return SearchProductsUseCaseImpl(repository)
     }
 
     @Provides
     @Singleton
-    fun provideGetFavoritePokemonsUseCase(
-        repository: PokedexRepository,
-    ): GetFavoritePokemonsUseCase {
-        return GetFavoritePokemonsUseCaseImpl(repository)
+    fun provideAddFavoriteProductUseCase(
+        repository: ProductRepository,
+    ): AddFavoriteProductUseCase {
+        return AddFavoriteProductUseCaseImpl(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetFavoriteProductsUseCase(
+        repository: ProductRepository,
+    ): GetFavoriteProductsUseCase {
+        return GetFavoriteProductsUseCaseImpl(repository)
     }
 }

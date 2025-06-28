@@ -1,9 +1,9 @@
 package com.vivacious.domainimpl.di
 
-import com.vivacious.domainimpl.repositories.PokedexRepositoryImpl
-import com.vivacious.pokedex.domain.data_sources.PokedexLocalDataSource
-import com.vivacious.pokedex.domain.data_sources.PokedexRemoteDataSource
-import com.vivacious.pokedex.domain.repositories.PokedexRepository
+import com.vivacious.domainimpl.repositories.ProductRepositoryImpl
+import com.vivacious.pokedex.domain.data_sources.ProductLocalDataSource
+import com.vivacious.pokedex.domain.data_sources.ProductRemoteDataSource
+import com.vivacious.pokedex.domain.repositories.ProductRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,10 +15,10 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
-    fun providePokedexRepositoru(
-        pokedexRemoteDataSource: PokedexRemoteDataSource,
-        pokedexLocalDataSource: PokedexLocalDataSource,
-    ): PokedexRepository {
-        return PokedexRepositoryImpl(pokedexRemoteDataSource, pokedexLocalDataSource)
+    fun provideProductRepository(
+        productRemoteDataSource: ProductRemoteDataSource,
+        productLocalDataSource: ProductLocalDataSource,
+    ): ProductRepository {
+        return ProductRepositoryImpl(productRemoteDataSource, productLocalDataSource)
     }
 }

@@ -1,8 +1,8 @@
 package com.vivacious.pokedex.network.di
 
-import com.vivacious.pokedex.domain.data_sources.PokedexRemoteDataSource
-import com.vivacious.pokedex.network.api.PokedexService
-import com.vivacious.pokedex.network.data_sources.PokedexRemoteDataSourceImpl
+import com.vivacious.pokedex.domain.data_sources.ProductRemoteDataSource
+import com.vivacious.pokedex.network.api.ProductService
+import com.vivacious.pokedex.network.data_sources.ProductRemoteDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,9 +15,9 @@ import javax.inject.Singleton
 object DataSourceModule {
     @Provides
     @Singleton
-    fun providePokedexRemoteDataSource(
-        pokedexService: PokedexService,
-    ): PokedexRemoteDataSource {
-        return PokedexRemoteDataSourceImpl(pokedexService = pokedexService)
+    fun provideProductRemoteDataSource(
+        productService: ProductService,
+    ): ProductRemoteDataSource {
+        return ProductRemoteDataSourceImpl(productService = productService)
     }
 }

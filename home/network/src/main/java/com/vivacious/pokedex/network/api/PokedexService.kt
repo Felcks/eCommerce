@@ -1,23 +1,22 @@
 package com.vivacious.pokedex.network.api
 
-import com.vivacious.pokedex.network.models.PageModel
-import com.vivacious.pokedex.network.models.PokemonResponse
-import com.vivacious.pokedex.network.models.PokemonSummaryResponse
+import com.vivacious.pokedex.network.models.ProductResponse
+import com.vivacious.pokedex.network.models.ProductsPageResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface PokedexService {
+interface ProductService {
 
-    @GET("pokemon")
-    suspend fun getPokemons(
+    @GET("products")
+    suspend fun getProducts(
         @Query(value = "limit") limit: Int,
-        @Query(value = "offset") offset: Int
-    ): Response<PageModel<PokemonSummaryResponse>>
+        @Query(value = "skip") skip: Int
+    ): Response<ProductsPageResponse>
 
-    @GET("pokemon/{pokemonId}")
-    suspend fun getPokemon(
-        @Path(value = "pokemonId") pokemonId: String,
-    ): Response<PokemonResponse>
+    @GET("products/{productId}")
+    suspend fun getProduct(
+        @Path(value = "productId") productId: String,
+    ): Response<ProductResponse>
 }

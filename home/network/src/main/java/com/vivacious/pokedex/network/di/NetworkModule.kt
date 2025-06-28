@@ -1,7 +1,8 @@
 package com.vivacious.pokedex.network.di
 
 import android.content.Context
-import com.vivacious.pokedex.network.Constants.POKEDEX_BASE_URL
+import com.vivacious.pokedex.network.Constants.DUMMY_JSON_BASE_URL
+import com.vivacious.pokedex.network.api.ProductService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,7 +34,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @PokedexOkHttpClient
+    @ProductOkHttpClient
     fun provideOkHttpClient(
         @InterceptorLogging loggingInterceptor: HttpLoggingInterceptor,
         @ApplicationContext context: Context
@@ -51,14 +52,22 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @PokedexRetrofit
+    @ProductRetrofit
     fun provideRetrofit(
-        @PokedexOkHttpClient okHttpClient: OkHttpClient,
+        @ProductOkHttpClient okHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl(POKEDEX_BASE_URL)
+            .baseUrl(DUMMY_JSON_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideProductService(
+        @ProductRetrofit retrofit: Retrofit
+    ): ProductService {
+        return retrofit.create(ProductService::class.java)
     }
 }

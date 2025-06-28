@@ -31,25 +31,22 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import com.vivacious.pokedex.domain.models.Pokemon
-import com.vivacious.pokedex.domain.models.PokemonSummary
+import com.vivacious.pokedex.domain.models.Product
 import com.vivacious.pokedex.presentation.R
-import com.vivacious.pokedex.presentation.home.HomeScreenEvent
-import com.vivacious.pokedex.presentation.home.PokemonCard
 import com.vivacious.pokedex.presentation.home.TopBar
-import com.vivacious.pokedex.presentation.pokemondetail.PokemonDetailEvent
+import com.vivacious.pokedex.presentation.home.ProductCard
 
 @Composable
 fun FavoriteListScreen(
     onBackClick: () -> Unit,
-    goToPokemonDetail: (pokemonUrl: String) -> Unit,
+    goToProductDetail: (productId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: FavoriteListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
     LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
-        viewModel.handleScreenEvents(FavoriteListEvent.LoadFavoritePokemons)
+        viewModel.handleScreenEvents(FavoriteListEvent.LoadFavoriteProducts)
     }
 
     Scaffold(
@@ -90,16 +87,16 @@ fun FavoriteListScreen(
                             fontSize = 18.sp
                         )
                         Box(modifier = Modifier.padding(vertical = 8.dp))
-                        Button(onClick = { viewModel.handleScreenEvents(FavoriteListEvent.LoadFavoritePokemons) }) {
+                        Button(onClick = { viewModel.handleScreenEvents(FavoriteListEvent.LoadFavoriteProducts) }) {
                             Text(stringResource(id = R.string.try_again))
                         }
                     }
                 }
 
-                state.pokemons != null -> {
-                    PokemonList2(
-                        pokemons = state.pokemons!!,
-                        onPokemonClick = goToPokemonDetail,
+                state.products != null -> {
+                    ProductList(
+                        products = state.products!!,
+                        onProductClick = goToProductDetail,
                         modifier = Modifier
                     )
                 }
@@ -109,9 +106,9 @@ fun FavoriteListScreen(
 }
 
 @Composable
-fun PokemonList2(
-    pokemons: List<Pokemon>,
-    onPokemonClick: (pokemonUrl: String) -> Unit,
+fun ProductList(
+    products: List<Product>,
+    onProductClick: (productId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -122,12 +119,12 @@ fun PokemonList2(
         modifier = modifier
     ) {
         items(
-            count = pokemons.size
+            count = products.size
         ) { index: Int ->
-            val pokemon = pokemons[index]
-            PokemonCard(
-                pokemonSummary = pokemon,
-                onPokemonClick = onPokemonClick,
+            val product = products[index]
+            ProductCard(
+                productSummary = product,
+                onProductClick = { onProductClick(product.id.toString()) },
                 modifier = Modifier
             )
         }
