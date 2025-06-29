@@ -26,6 +26,12 @@ class HomeScreenViewModel @Inject constructor(
 
     // Flag para controlar se já carregou produtos inicialmente
     private var hasLoadedInitialProducts = false
+    
+    // Flag para controlar se há uma busca ativa
+    private var hasActiveSearch = false
+    
+    // Cache para os produtos normais
+    private var cachedProducts: PagingData<ProductSummary>? = null
 
     fun handleScreenEvents(event: HomeScreenEvent) {
         when (event) {
@@ -33,6 +39,7 @@ class HomeScreenViewModel @Inject constructor(
                 if (!hasLoadedInitialProducts) {
                     loadProducts()
                     hasLoadedInitialProducts = true
+                    hasActiveSearch = false
                 }
             }
             HomeScreenEvent.LoadMoreProducts -> {
@@ -43,14 +50,27 @@ class HomeScreenViewModel @Inject constructor(
             }
             is HomeScreenEvent.SearchProducts -> {
                 if (event.query.isEmpty()) {
-                    // Se a query estiver vazia, voltar para produtos normais
-                    hasLoadedInitialProducts = false // Reset para forçar carregamento
-                    loadProducts()
+                    // Se a query estiver vazia e havia uma busca ativa, voltar para produtos normais
+                    if (hasActiveSearch) {
+                        // Restaurar produtos do cache se disponível
+                        cachedProducts?.let { cached ->
+                            _products.value = cached
+                        } ?: run {
+                            hasLoadedInitialProducts = false // Reset para forçar carregamento
+                            loadProducts()
+                        }
+                        hasActiveSearch = false
+                    }
                 } else {
                     searchProducts(event.query)
+                    hasActiveSearch = true
                 }
             }
         }
+    }
+
+    fun hasSearchQuery(): Boolean {
+        return hasActiveSearch
     }
 
     private fun loadProducts() {
@@ -59,6 +79,10 @@ class HomeScreenViewModel @Inject constructor(
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _products.value = it
+                    // Cache os produtos normais
+                    if (!hasActiveSearch) {
+                        cachedProducts = it
+                    }
                 }
         }
     }

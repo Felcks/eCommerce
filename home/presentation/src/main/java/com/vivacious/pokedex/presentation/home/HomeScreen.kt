@@ -45,6 +45,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,6 +78,7 @@ import com.vivacious.pokedex.core.presentation.theme.PokedexTheme
 import com.vivacious.pokedex.presentation.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -86,17 +89,15 @@ fun HomeScreen(
     goToProductReview: () -> Unit,
 ) {
     val products = homeScreenViewModel.products.collectAsLazyPagingItems()
-    var searchQuery by remember { mutableStateOf("") }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
 
-    // Preservar o estado do scroll
+    // Preservar o estado do scroll usando rememberSaveable
     val gridState = rememberLazyGridState()
 
-    // Só carregar produtos se não houver nenhum item carregado
+    // Carregar produtos apenas uma vez na inicialização
     LaunchedEffect(Unit) {
-        if (products.itemCount == 0) {
-            homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshProducts)
-        }
+        homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshProducts)
     }
 
     // Debounced search com 0,5 segundos
@@ -106,9 +107,17 @@ fun HomeScreen(
             delay(500) // 500ms debounce
             homeScreenViewModel.handleScreenEvents(HomeScreenEvent.SearchProducts(searchQuery))
             isSearching = false
-        } else {
-            // Se o campo estiver vazio, voltar para produtos normais imediatamente
+        } else if (searchQuery.isEmpty() && homeScreenViewModel.hasSearchQuery()) {
+            // Só limpar a busca se havia uma busca ativa
             homeScreenViewModel.handleScreenEvents(HomeScreenEvent.SearchProducts(""))
+        }
+    }
+
+    // Preservar o estado do scroll quando a tela for recriada
+    LaunchedEffect(products.itemCount) {
+        if (products.itemCount > 0 && gridState.firstVisibleItemIndex > 0) {
+            // Restaurar a posição do scroll se necessário
+            gridState.animateScrollToItem(gridState.firstVisibleItemIndex)
         }
     }
 
