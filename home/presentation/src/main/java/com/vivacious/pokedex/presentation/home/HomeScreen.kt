@@ -26,6 +26,8 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
@@ -131,7 +133,7 @@ fun HomeScreen(
                 actions = {
                     IconButton(onClick = { goToFavoriteList() }) {
                         Icon(
-                            Icons.Default.Star,
+                            Icons.Default.Bookmark,
                             contentDescription = "View favorites",
                             modifier = modifier
                                 .wrapContentSize()

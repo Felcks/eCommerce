@@ -59,6 +59,7 @@ import coil.compose.SubcomposeAsyncImage
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 
@@ -213,23 +214,6 @@ fun FavoriteProductCard(
                         .height(160.dp)
                         .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                 )
-                
-                // Botão de remover favorito
-                IconButton(
-                    onClick = { onRemoveFavorite(product.id) },
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .size(32.dp)
-                        .background(Color.Red.copy(alpha = 0.8f), CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "Remover dos favoritos",
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
             }
 
             Column(

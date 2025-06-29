@@ -25,6 +25,8 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -161,9 +163,10 @@ fun ProductDetailWithCollapsingToolbar(
                     imageHeightPx.value = (imageHeightPx.value + consumed).coerceIn(minImageHeightPx, maxImageHeightPx)
                     Offset(0f, consumed)
                 } else if (delta > 0) { // Scroll para baixo, expande
-                    val consumed = if (lazyListState.firstVisibleItemIndex == 0 && lazyListState.firstVisibleItemScrollOffset == 0) {
-                        if (newHeight < maxImageHeightPx) delta else maxImageHeightPx - imageHeightPx.value
-                    } else 0f
+                    val consumed =
+                        if (lazyListState.firstVisibleItemIndex == 0 && lazyListState.firstVisibleItemScrollOffset == 0) {
+                            if (newHeight < maxImageHeightPx) delta else maxImageHeightPx - imageHeightPx.value
+                        } else 0f
                     imageHeightPx.value = (imageHeightPx.value + consumed).coerceIn(minImageHeightPx, maxImageHeightPx)
                     Offset(0f, consumed)
                 } else {
@@ -365,7 +368,29 @@ fun ProductDetailWithCollapsingToolbar(
                             onClick = { onToggleFavoriteClick.invoke() },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(if (isFavorite) "Remover dos favoritos" else "Adicionar aos favoritos")
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                val (icon, text) = if(isFavorite) {
+                                    Pair(Icons.Default.Bookmark, stringResource(R.string.remove_from_favorites))
+                                } else {
+                                    Pair(Icons.Default.BookmarkBorder, stringResource(R.string.add_to_favorites))
+                                }
+
+                                Icon(
+                                    icon,
+                                    contentDescription = "View favorites",
+                                    modifier = modifier.wrapContentSize()
+                                )
+                                Text(
+                                    text,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxHeight().padding(start = 16.dp)
+                                )
+                            }
+
                         }
                         Spacer(modifier = Modifier.padding(vertical = 32.dp))
                     }
