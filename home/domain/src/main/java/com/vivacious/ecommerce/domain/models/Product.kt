@@ -8,7 +8,7 @@ interface Product : ProductSummary {
     override val discountPercentage: Double
     override val rating: Double
     val stock: Int
-    val brand: String
+    val brand: String?
     val category: String
     override val thumbnail: String
     override val images: List<String>

@@ -13,7 +13,7 @@ data class ProductEntity(
     val discountPercentage: Double,
     val rating: Double,
     val stock: Int,
-    val brand: String,
+    val brand: String?,
     val category: String,
     val thumbnail: String,
     val images: String // JSON string of images list

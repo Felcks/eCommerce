@@ -148,7 +148,7 @@ fun ProductDetailWithCollapsingToolbar(
 ) {
     var backgroundColor by remember { mutableStateOf(Color(147, 201, 172)) }
     val minImageHeight = 80.dp
-    val maxImageHeight = 400.dp
+    val maxImageHeight = 440.dp
     val minImageHeightPx = with(LocalDensity.current) { minImageHeight.toPx() }
     val maxImageHeightPx = with(LocalDensity.current) { maxImageHeight.toPx() }
     val imageHeightPx = remember { mutableStateOf(maxImageHeightPx) }
@@ -204,7 +204,7 @@ fun ProductDetailWithCollapsingToolbar(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 48.dp)
+                    .padding(top = 48.dp, bottom = 32.dp)
                     .clip(
                         CircleShape.copy(
                             bottomEnd = CornerSize(32.dp),
@@ -364,7 +364,7 @@ fun ProductDetailWithCollapsingToolbar(
                             modifier = Modifier.padding(bottom = 8.dp)
                         ) {
                             Text(
-                                "Marca: ${product.brand}",
+                                "Marca: ${product.brand ?: "-"}",
                                 fontSize = 14.sp,
                                 modifier = Modifier.weight(1f)
                             )

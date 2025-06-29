@@ -63,7 +63,7 @@ fun ProductCard(
         modifier = modifier
             .background(Color.White)
             .clickable { onProductClick.invoke(id) }
-            .heightIn(min = 280.dp, max = 280.dp),
+            .heightIn(min = 310.dp, max = 310.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(
@@ -75,7 +75,8 @@ fun ProductCard(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
+                    .height(180.dp)
+                    .padding(top = 16.dp)
                     .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
             )
             Column(
@@ -118,7 +119,7 @@ fun ProductCard(
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.Bottom,
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 20.dp, max = 20.dp)
