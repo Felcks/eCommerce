@@ -92,6 +92,7 @@ fun HomeScreen(
     goToProductDetail: (productId: String) -> Unit,
     goToFavoriteList: () -> Unit,
     goToProductReview: () -> Unit,
+    showStoreReviewForm: Boolean,
 ) {
     val products = homeScreenViewModel.products.collectAsLazyPagingItems()
     var searchQuery by rememberSaveable { mutableStateOf("") }
@@ -144,10 +145,12 @@ fun HomeScreen(
         },
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = goToProductReview,
-                content = { Text(stringResource(R.string.evaluate_store)) }
-            )
+            if(showStoreReviewForm) {
+                ExtendedFloatingActionButton(
+                    onClick = goToProductReview,
+                    content = { Text(stringResource(R.string.evaluate_store)) }
+                )
+            }
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {

@@ -31,6 +31,18 @@ android {
             )
         }
     }
+    android.buildFeatures.buildConfig = true
+    flavorDimensions += "version"
+    productFlavors {
+        create("simple") {
+            dimension = "version"
+            buildConfigField("Boolean", "SHOW_STORE_REVIEW_FORM", "false")
+        }
+        create("complete") {
+            dimension = "version"
+            buildConfigField("Boolean", "SHOW_STORE_REVIEW_FORM", "true")
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

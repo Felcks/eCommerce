@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.vivacious.pokedex.BuildConfig
 import com.vivacious.pokedex.presentation.favoritelist.favoriteList
 import com.vivacious.pokedex.presentation.favoritelist.navigateToFavoriteList
 import com.vivacious.pokedex.presentation.home.HomeScreenNavigationRoute
@@ -31,7 +32,8 @@ fun PokedexNavHost(modifier: Modifier = Modifier) {
             },
             goToProductReview = {
                 navController.navigateToStoreReview()
-            }
+            },
+            showStoreReviewForm = BuildConfig.SHOW_STORE_REVIEW_FORM
         )
         productDetail(onBackClick = { navController.popBackStack() })
         favoriteList(
