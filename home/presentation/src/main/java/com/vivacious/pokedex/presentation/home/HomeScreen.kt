@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.StarHalf
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,6 +41,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -80,6 +82,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -123,9 +126,9 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            TopBar(
-                title = stringResource(id = R.string.home_scree_title),
-                icon = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.home_scree_title), fontSize = 24.sp) },
+                actions = {
                     IconButton(onClick = { goToFavoriteList() }) {
                         Icon(
                             Icons.Default.Star,
@@ -135,7 +138,6 @@ fun HomeScreen(
                         )
                     }
                 },
-                modifier = Modifier.padding(top = 48.dp, start = 32.dp)
             )
         },
         modifier = modifier.fillMaxSize(),

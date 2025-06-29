@@ -58,7 +58,11 @@ import com.vivacious.pokedex.presentation.home.ProductCard
 import coil.compose.SubcomposeAsyncImage
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteListScreen(
     onBackClick: () -> Unit,
@@ -75,10 +79,16 @@ fun FavoriteListScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopBar(
-                title = stringResource(id = R.string.favorite_list_screen_title),
-                icon = { },
-                modifier = Modifier.padding(top = 48.dp, start = 32.dp)
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.favorite_list_screen_title), fontSize = 24.sp) },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                },
             )
         },
     ) { innerPadding ->
