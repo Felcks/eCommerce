@@ -26,7 +26,10 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material.icons.filled.StarHalf
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.ThumbDown
+import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -277,114 +280,6 @@ private fun ProductListPreview() {
 }
 
 @Composable
-fun ProductCard(
-    productSummary: ProductSummary,
-    onProductClick: (productId: String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .background(Color.White)
-            .clickable {
-                onProductClick.invoke(productSummary.id.toString())
-            }
-            .heightIn(min = 280.dp, max = 280.dp),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            SubcomposeAsyncImage(
-                model = productSummary.thumbnail,
-                contentDescription = productSummary.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
-                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
-            )
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
-                    .weight(1f)
-            ) {
-                Text(
-                    productSummary.title,
-                    fontSize = 14.sp,
-                    maxLines = 2,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 40.dp, max = 40.dp),
-                    lineHeight = 20.sp
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 20.dp, max = 20.dp)
-                ) {
-                    Text(
-                        "${String.format("%.2f", productSummary.price)}€",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32)
-                    )
-                    if (productSummary.discountPercentage > 0) {
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            "-${String.format("%.0f", productSummary.discountPercentage)}%",
-                            fontSize = 12.sp,
-                            color = Color.Red,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 20.dp, max = 20.dp)
-                ) {
-                    val ratingIcon = when {
-                        productSummary.rating < 3 -> Icons.Filled.StarBorder
-                        productSummary.rating < 4 -> Icons.Filled.StarHalf
-                        else -> Icons.Default.Star
-                    }
-                    Icon(
-                        imageVector = ratingIcon,
-                        contentDescription = "Rating",
-                        tint = Color(0xFFFFD700),
-                        modifier = Modifier
-                            .padding(end = 4.dp)
-                            .size(16.dp)
-                    )
-                    Text(
-                        text = String.format("%.1f", productSummary.rating),
-                        fontSize = 12.sp
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun ProductCardPreview() {
-    EcommerceTheme {
-        ProductCard(MOCK_PRODUCTS.first(), onProductClick = {})
-    }
-}
-
-@Composable
 fun TopBar(title: String, icon: @Composable () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -420,9 +315,18 @@ val MOCK_PRODUCTS = listOf<ProductSummary>(
         override val title: String = "iPhone X"
         override val thumbnail: String = "https://dummyjson.com/image/i/products/2/thumbnail.jpg"
         override val images: List<String> = listOf("https://dummyjson.com/image/i/products/2/1.jpg")
-        override val rating: Double = 4.44
+        override val rating: Double = 3.44
         override val id: Int = 2
         override val price: Double = 899.0
         override val discountPercentage: Double = 0.0
+    },
+    object : ProductSummary {
+        override val title: String = "Produto Ruim"
+        override val thumbnail: String = "https://dummyjson.com/image/i/products/3/thumbnail.jpg"
+        override val images: List<String> = listOf("https://dummyjson.com/image/i/products/3/1.jpg")
+        override val rating: Double = 2.1
+        override val id: Int = 3
+        override val price: Double = 299.0
+        override val discountPercentage: Double = 25.0
     }
 )

@@ -23,9 +23,13 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbDown
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.StarHalf
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -313,15 +317,41 @@ fun ProductDetailWithCollapsingToolbar(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(bottom = 8.dp)
                         ) {
+                            val (ratingIcon, ratingColor, ratingText) = when {
+                                product.rating < 3 -> Triple(
+                                    Icons.Filled.ThumbDown,
+                                    Color(0xFFD32F2F),
+                                    "Má escolha"
+                                )
+                                product.rating < 4 -> Triple(
+                                    Icons.AutoMirrored.Filled.StarHalf,
+                                    Color(0xFFFF9800),
+                                    "Escolha neutra"
+                                )
+                                else -> Triple(
+                                    Icons.Filled.ThumbUp,
+                                    Color(0xFF4CAF50),
+                                    "Ótima escolha"
+                                )
+                            }
                             Icon(
-                                imageVector = Icons.Default.Star,
-                                contentDescription = "Rating",
-                                tint = Color(0xFFFFD700),
+                                imageVector = ratingIcon,
+                                contentDescription = ratingText,
+                                tint = ratingColor,
                                 modifier = Modifier.padding(end = 4.dp)
                             )
                             Text(
                                 text = String.format("%.1f", product.rating),
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
+                                color = ratingColor,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = ratingText,
+                                fontSize = 12.sp,
+                                color = ratingColor,
+                                fontWeight = FontWeight.Bold
                             )
                         }
                         Text(
