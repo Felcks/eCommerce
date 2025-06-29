@@ -5,23 +5,25 @@ import com.vivacious.domainimpl.usecases.GetFavoriteProductsUseCaseImpl
 import com.vivacious.domainimpl.usecases.GetProductUseCaseImpl
 import com.vivacious.domainimpl.usecases.GetProductsUseCaseImpl
 import com.vivacious.domainimpl.usecases.SearchProductsUseCaseImpl
+import com.vivacious.domainimpl.usecases.ValidateProductReviewUseCaseImpl
 import com.vivacious.pokedex.domain.repositories.ProductRepository
 import com.vivacious.pokedex.domain.usecases.AddFavoriteProductUseCase
 import com.vivacious.pokedex.domain.usecases.GetFavoriteProductsUseCase
 import com.vivacious.pokedex.domain.usecases.GetProductUseCase
 import com.vivacious.pokedex.domain.usecases.GetProductsUseCase
 import com.vivacious.pokedex.domain.usecases.SearchProductsUseCase
+import com.vivacious.pokedex.domain.usecases.ValidateProductReviewUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object UseCaseModule {
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideGetProductsUseCase(
         repository: ProductRepository,
     ): GetProductsUseCase {
@@ -29,7 +31,7 @@ object UseCaseModule {
     }
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideGetProductUseCase(
         repository: ProductRepository,
     ): GetProductUseCase {
@@ -37,7 +39,7 @@ object UseCaseModule {
     }
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideSearchProductsUseCase(
         repository: ProductRepository,
     ): SearchProductsUseCase {
@@ -45,7 +47,7 @@ object UseCaseModule {
     }
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideAddFavoriteProductUseCase(
         repository: ProductRepository,
     ): AddFavoriteProductUseCase {
@@ -53,10 +55,16 @@ object UseCaseModule {
     }
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideGetFavoriteProductsUseCase(
         repository: ProductRepository,
     ): GetFavoriteProductsUseCase {
         return GetFavoriteProductsUseCaseImpl(repository)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideValidateProductReviewUseCase(): ValidateProductReviewUseCase {
+        return ValidateProductReviewUseCaseImpl()
     }
 }

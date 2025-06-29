@@ -16,6 +16,7 @@ fun NavController.navigateToHomeScreen(
 fun NavGraphBuilder.homeScreen(
     goToProductDetail: (productId: String) -> Unit,
     goToFavoriteList: () -> Unit,
+    goToProductReview: () -> Unit,
 ) {
     composable(
         HomeScreenNavigationRoute
@@ -23,6 +24,7 @@ fun NavGraphBuilder.homeScreen(
         HomeScreen(
             goToProductDetail = goToProductDetail,
             goToFavoriteList = goToFavoriteList,
+            goToProductReview = goToProductReview
         )
     }
 }

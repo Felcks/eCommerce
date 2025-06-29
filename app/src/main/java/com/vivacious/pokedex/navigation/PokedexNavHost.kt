@@ -10,6 +10,8 @@ import com.vivacious.pokedex.presentation.home.HomeScreenNavigationRoute
 import com.vivacious.pokedex.presentation.home.homeScreen
 import com.vivacious.pokedex.presentation.pokemondetail.navigateToProductDetail
 import com.vivacious.pokedex.presentation.pokemondetail.productDetail
+import com.vivacious.pokedex.presentation.productreview.navigateToProductReview
+import com.vivacious.pokedex.presentation.productreview.productReview
 
 @Composable
 fun PokedexNavHost(modifier: Modifier = Modifier) {
@@ -26,6 +28,9 @@ fun PokedexNavHost(modifier: Modifier = Modifier) {
             },
             goToFavoriteList = {
                 navController.navigateToFavoriteList()
+            },
+            goToProductReview = {
+                navController.navigateToProductReview()
             }
         )
         productDetail(onBackClick = { navController.popBackStack() })
@@ -35,5 +40,6 @@ fun PokedexNavHost(modifier: Modifier = Modifier) {
                 navController.navigateToProductDetail(productId = it)
             },
         )
+        productReview(onBackClick = { navController.popBackStack() })
     }
 }

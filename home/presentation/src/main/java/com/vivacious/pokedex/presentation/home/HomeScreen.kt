@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.StarHalf
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -82,6 +83,7 @@ fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel = hiltViewModel(),
     goToProductDetail: (productId: String) -> Unit,
     goToFavoriteList: () -> Unit,
+    goToProductReview: () -> Unit,
 ) {
     val products = homeScreenViewModel.products.collectAsLazyPagingItems()
     var searchQuery by remember { mutableStateOf("") }
@@ -127,7 +129,13 @@ fun HomeScreen(
                 modifier = Modifier.padding(top = 48.dp, start = 32.dp)
             )
         },
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = goToProductReview,
+                content = { Text("Avaliar produto") }
+            )
+        }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             // Search Bar
