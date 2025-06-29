@@ -60,7 +60,7 @@ class ValidateStoreReviewUseCaseImpl @Inject constructor() : ValidateStoreReview
     }
 
     private fun isValidPromotionalCode(code: String): Boolean {
-        val codeRegex = "^[A-Z-]{3,7}$"
+        val codeRegex = "^[A-Za-z-]{3,7}$"
         return code.matches(codeRegex.toRegex())
     }
 

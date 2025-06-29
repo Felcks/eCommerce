@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.filled.StarHalf
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.ThumbDown
@@ -120,7 +121,7 @@ fun HomeScreen(
                     IconButton(onClick = { goToFavoriteList() }) {
                         Icon(
                             Icons.Default.Bookmark,
-                            contentDescription = "View favorites",
+                            contentDescription = stringResource(R.string.view_favorites),
                             modifier = modifier
                                 .wrapContentSize()
                         )
@@ -143,7 +144,7 @@ fun HomeScreen(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 placeholder = { Text(stringResource(R.string.search_products)) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search)) },
                 trailingIcon = {
                     if (isSearching && searchQuery.isNotEmpty()) {
                         CircularProgressIndicator(
@@ -181,7 +182,7 @@ fun HomeScreen(
                             CircularProgressIndicator()
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                "Buscando por \"$searchQuery\"...",
+                                stringResource(R.string.searching_products, searchQuery),
                                 fontSize = 16.sp,
                                 color = Color.Gray
                             )
@@ -199,7 +200,7 @@ fun HomeScreen(
                     ) {
                         Text(
                             (products.loadState.refresh as LoadState.Error).error.message
-                                ?: "Unexpected error",
+                                ?: stringResource(R.string.unexpected_error),
                             style = TextStyle(textAlign = TextAlign.Center),
                             fontSize = 18.sp
                         )
@@ -227,7 +228,7 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            if (searchQuery.isNotEmpty()) "Nenhum produto encontrado para \"$searchQuery\"" else "Nenhum produto disponível",
+                            if (searchQuery.isNotEmpty()) stringResource(R.string.no_products_found_for_search, searchQuery) else stringResource(R.string.no_products_available),
                             style = TextStyle(textAlign = TextAlign.Center),
                             fontSize = 18.sp
                         )
@@ -297,7 +298,7 @@ fun TopBar(title: String, icon: @Composable () -> Unit, modifier: Modifier = Mod
 @Composable
 fun TopBarPreview() {
     EcommerceTheme {
-        TopBar(title = "E-commerce", {})
+        TopBar(title = stringResource(R.string.home_scree_title), {})
     }
 }
 

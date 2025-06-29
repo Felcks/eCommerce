@@ -1,26 +1,30 @@
 package com.vivacious.ecommerce.presentation.storereview
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,15 +35,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import com.vivacious.ecommerce.core.presentation.theme.EcommerceTheme
 import com.vivacious.ecommerce.domain.models.Rating
 import com.vivacious.ecommerce.domain.usecases.ValidationError
+import com.vivacious.ecommerce.domain.usecases.ValidateStoreReviewUseCase
 import com.vivacious.ecommerce.presentation.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,179 +58,171 @@ import com.vivacious.ecommerce.presentation.R
 fun StoreReviewScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: StoreReviewViewModel = hiltViewModel()
+    viewModel: StoreReviewViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
+
     Scaffold(
+        modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.evaluating_store), fontSize = 24.sp) },
+                title = { Text(stringResource(R.string.store_evaluation), fontSize = 24.sp) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             OutlinedTextField(
                 value = state.userName,
                 onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateUserName(it)) },
-                label = { Text("Nome do usuário") },
+                label = { Text(stringResource(R.string.user_name_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 isError = state.validationErrors.contains(ValidationError.EmptyUserName)
             )
             if (state.validationErrors.contains(ValidationError.EmptyUserName)) {
                 Text(
-                    text = "Nome é obrigatório",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
+                    text = stringResource(R.string.user_name_required),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = state.email,
                 onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateEmail(it)) },
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.email_label)) },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 isError = state.validationErrors.contains(ValidationError.EmptyEmail) ||
                         state.validationErrors.contains(ValidationError.InvalidEmail)
             )
-            when {
-                state.validationErrors.contains(ValidationError.EmptyEmail) -> {
-                    Text(
-                        text = "Email é obrigatório",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-
-                state.validationErrors.contains(ValidationError.InvalidEmail) -> {
-                    Text(
-                        text = "Email inválido",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
+            if (state.validationErrors.contains(ValidationError.EmptyEmail)) {
+                Text(
+                    text = stringResource(R.string.email_required),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            } else if (state.validationErrors.contains(ValidationError.InvalidEmail)) {
+                Text(
+                    text = stringResource(R.string.email_invalid),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = state.phoneNumber,
-                onValueChange = {
-                    val filtered = it.filter { char -> char.isDigit() }
-                    viewModel.handleScreenEvents(StoreReviewEvent.UpdatePhoneNumber(filtered))
-                },
-                label = { Text("Número de telefone") },
+                onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdatePhoneNumber(it)) },
+                label = { Text(stringResource(R.string.phone_label)) },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 isError = state.validationErrors.contains(ValidationError.EmptyPhoneNumber) ||
                         state.validationErrors.contains(ValidationError.InvalidPhoneNumber)
             )
-            when {
-                state.validationErrors.contains(ValidationError.EmptyPhoneNumber) -> {
-                    Text(
-                        text = "Número é obrigatório",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-
-                state.validationErrors.contains(ValidationError.InvalidPhoneNumber) -> {
-                    Text(
-                        text = "Apenas dígitos são permitidos",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
+            if (state.validationErrors.contains(ValidationError.EmptyPhoneNumber)) {
+                Text(
+                    text = stringResource(R.string.phone_required),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            } else if (state.validationErrors.contains(ValidationError.InvalidPhoneNumber)) {
+                Text(
+                    text = stringResource(R.string.phone_invalid),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = state.promotionalCode,
-                onValueChange = {
-                    val filtered = it.uppercase().filter { char -> char.isLetter() || char == '-' }
-                    viewModel.handleScreenEvents(StoreReviewEvent.UpdatePromotionalCode(filtered))
-                },
-                label = { Text("Código promocional") },
+                onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdatePromotionalCode(it)) },
+                label = { Text(stringResource(R.string.promo_code_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 isError = state.validationErrors.contains(ValidationError.EmptyPromotionalCode) ||
                         state.validationErrors.contains(ValidationError.InvalidPromotionalCode)
             )
-            when {
-                state.validationErrors.contains(ValidationError.EmptyPromotionalCode) -> {
-                    Text(
-                        text = "Código promocional é obrigatório",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-
-                state.validationErrors.contains(ValidationError.InvalidPromotionalCode) -> {
-                    Text(
-                        text = "Apenas letras maiúsculas e hífens, 3-7 caracteres",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
+            if (state.validationErrors.contains(ValidationError.EmptyPromotionalCode)) {
+                Text(
+                    text = stringResource(R.string.promo_code_required),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            } else if (state.validationErrors.contains(ValidationError.InvalidPromotionalCode)) {
+                Text(
+                    text = stringResource(R.string.promo_code_invalid),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = state.deliveryDate,
                 onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateDeliveryDate(it)) },
-                label = { Text("Data de entrega (dd/MM/yyyy)") },
+                label = { Text(stringResource(R.string.delivery_date_label)) },
                 modifier = Modifier.fillMaxWidth(),
-                isError = state.validationErrors.any {
-                    it is ValidationError.EmptyDeliveryDate ||
-                            it is ValidationError.InvalidDeliveryDate ||
-                            it is ValidationError.MondayNotAllowed ||
-                            it is ValidationError.FutureDateNotAllowed
-                }
+                isError = state.validationErrors.contains(ValidationError.EmptyDeliveryDate) ||
+                        state.validationErrors.contains(ValidationError.InvalidDeliveryDate) ||
+                        state.validationErrors.contains(ValidationError.MondayNotAllowed) ||
+                        state.validationErrors.contains(ValidationError.FutureDateNotAllowed)
             )
-            when {
-                state.validationErrors.contains(ValidationError.EmptyDeliveryDate) -> {
-                    Text(
-                        text = "Data é obrigatória",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-
-                state.validationErrors.contains(ValidationError.InvalidDeliveryDate) -> {
-                    Text(
-                        text = "Data inválida (use dd/MM/yyyy)",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-
-                state.validationErrors.contains(ValidationError.MondayNotAllowed) -> {
-                    Text(
-                        text = "Segunda-feira não é permitida",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-
-                state.validationErrors.contains(ValidationError.FutureDateNotAllowed) -> {
-                    Text(
-                        text = "Data não pode estar no futuro",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
+            if (state.validationErrors.contains(ValidationError.EmptyDeliveryDate)) {
+                Text(
+                    text = stringResource(R.string.date_required),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            } else if (state.validationErrors.contains(ValidationError.InvalidDeliveryDate)) {
+                Text(
+                    text = stringResource(R.string.date_invalid),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            } else if (state.validationErrors.contains(ValidationError.MondayNotAllowed)) {
+                Text(
+                    text = stringResource(R.string.monday_not_allowed),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            } else if (state.validationErrors.contains(ValidationError.FutureDateNotAllowed)) {
+                Text(
+                    text = stringResource(R.string.future_date_not_allowed),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             RatingDropdown(
                 selectedRating = state.rating,
@@ -228,9 +231,10 @@ fun StoreReviewScreen(
             )
             if (state.validationErrors.contains(ValidationError.EmptyRating)) {
                 Text(
-                    text = "Classificação é obrigatória",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
+                    text = stringResource(R.string.rating_required),
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 16.dp)
                 )
             }
 
@@ -239,25 +243,37 @@ fun StoreReviewScreen(
             Button(
                 onClick = { viewModel.handleScreenEvents(StoreReviewEvent.SubmitReview) },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !state.isLoading
+                shape = RoundedCornerShape(8.dp)
             ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.padding(end = 8.dp),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-                Text("Enviar Avaliação")
+                Text(stringResource(R.string.send_evaluation))
             }
 
             if (state.isSubmitted) {
-                Text(
-                    text = "Avaliação enviada com sucesso!",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Filled.CheckCircle,
+                            contentDescription = null,
+                            tint = Color.Green,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.evaluation_sent_success),
+                            color = Color.Green,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
     }
@@ -268,19 +284,22 @@ fun StoreReviewScreen(
 fun RatingDropdown(
     selectedRating: Rating?,
     onRatingSelected: (Rating) -> Unit,
-    isError: Boolean
+    isError: Boolean,
+    modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = it }
+        onExpandedChange = { expanded = it },
+        modifier = modifier
     ) {
+        val ratingLabel = stringResource(R.string.rating_label)
         OutlinedTextField(
-            value = selectedRating?.displayName ?: "",
+            value = selectedRating?.let { stringResource(it.displayName) } ?: "",
             onValueChange = {},
             readOnly = true,
-            label = { Text("Classificação") },
+            label = { Text(text = ratingLabel) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -294,7 +313,7 @@ fun RatingDropdown(
         ) {
             Rating.values().forEach { rating ->
                 DropdownMenuItem(
-                    text = { Text(rating.displayName) },
+                    text = { Text(stringResource(rating.displayName)) },
                     onClick = {
                         onRatingSelected(rating)
                         expanded = false
@@ -305,11 +324,19 @@ fun RatingDropdown(
     }
 }
 
-val Rating.displayName: String
+val Rating.displayName: Int
     get() = when (this) {
-        Rating.BAD -> "Mau"
-        Rating.FINE -> "Satisfatório"
-        Rating.GOOD -> "Bom"
-        Rating.GREAT -> "Muito Bom"
-        Rating.EXCELLENT -> "Excelente"
-    } 
+        Rating.BAD -> R.string.rating_bad
+        Rating.FINE -> R.string.rating_satisfactory
+        Rating.GOOD -> R.string.rating_good
+        Rating.GREAT -> R.string.rating_very_good
+        Rating.EXCELLENT -> R.string.rating_excellent
+    }
+
+@Preview
+@Composable
+private fun StoreReviewScreenPreview() {
+    EcommerceTheme {
+        StoreReviewScreen(onBackClick = {})
+    }
+} 

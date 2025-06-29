@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +26,12 @@ import coil.compose.SubcomposeAsyncImage
 import com.vivacious.ecommerce.domain.models.Product
 import com.vivacious.ecommerce.domain.models.ProductSummary
 import com.vivacious.ecommerce.core.presentation.theme.EcommerceTheme
-import java.awt.font.TextAttribute
+import com.vivacious.ecommerce.core.presentation.theme.PriceGreen
+import com.vivacious.ecommerce.core.presentation.theme.DiscountRed
+import com.vivacious.ecommerce.core.presentation.theme.RatingBadRed
+import com.vivacious.ecommerce.core.presentation.theme.RatingNeutralOrange
+import com.vivacious.ecommerce.core.presentation.theme.RatingGoodGreen
+import com.vivacious.ecommerce.presentation.R
 
 @Composable
 fun ProductCard(
@@ -57,7 +62,7 @@ fun ProductCard(
             discountPercentage = productSummary.discountPercentage
             rating = productSummary.rating
         }
-        else -> throw IllegalArgumentException("Tipo não suportado")
+        else -> throw IllegalArgumentException(stringResource(R.string.unsupported_type))
     }
     Card(
         modifier = modifier
@@ -102,24 +107,24 @@ fun ProductCard(
                         .heightIn(min = 20.dp, max = 20.dp)
                 ) {
                     Text(
-                        "${String.format("%.2f", price)}€",
+                        stringResource(R.string.price_format, price),
                         fontSize = 14.sp,
                         fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                        color = Color(0xFF2E7D32)
+                        color = PriceGreen
                     )
                     if (discountPercentage > 0) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            "-${String.format("%.0f", discountPercentage)}%",
+                            stringResource(R.string.discount_format, discountPercentage),
                             fontSize = 12.sp,
-                            color = Color.Red,
+                            color = DiscountRed,
                             fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                         )
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    verticalAlignment = Alignment.Bottom,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 20.dp, max = 20.dp)
@@ -127,18 +132,18 @@ fun ProductCard(
                     val (ratingIcon, ratingColor, ratingText) = when {
                         rating < 3 -> Triple(
                             Icons.Filled.ThumbDown,
-                            Color(0xFFD32F2F),
-                            "Má escolha"
+                            RatingBadRed,
+                            stringResource(R.string.bad_choice)
                         )
                         rating < 4 -> Triple(
                             Icons.AutoMirrored.Filled.StarHalf,
-                            Color(0xFFFF9800),
-                            "Escolha neutra"
+                            RatingNeutralOrange,
+                            stringResource(R.string.neutral_choice)
                         )
                         else -> Triple(
                             Icons.Filled.ThumbUp,
-                            Color(0xFF4CAF50),
-                            "Ótima escolha"
+                            RatingGoodGreen,
+                            stringResource(R.string.great_choice)
                         )
                     }
                     Icon(
@@ -150,7 +155,7 @@ fun ProductCard(
                             .size(18.dp)
                     )
                     Text(
-                        text = String.format("%.1f", rating),
+                        text = stringResource(R.string.rating_format, rating),
                         fontSize = 12.sp,
                         fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
                         color = ratingColor

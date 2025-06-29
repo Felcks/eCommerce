@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme Colors -->
+    <color name="purple_80">#FFD0BCFF</color>
+    <color name="purple_grey_80">#FFCCC2DC</color>
+    <color name="pink_80">#FFEFB8C8</color>
+    <color name="purple_40">#FF6650a4</color>
+    <color name="purple_grey_40">#FF625b71</color>
+    <color name="pink_40">#FF7D5260</color>
+    
+    <!-- Product Colors -->
+    <color name="price_green">#FF2E7D32</color>
+    <color name="discount_red">#FFFF0000</color>
+    <color name="rating_gold">#FFFFD700</color>
+    
+    <!-- Rating Colors -->
+    <color name="rating_bad_red">#FFD32F2F</color>
+    <color name="rating_neutral_orange">#FFFF9800</color>
+    <color name="rating_good_green">#FF4CAF50</color>
+    
+    <!-- Background Colors -->
+    <color name="default_background">#FF93C9AC</color>
+    
+    <!-- Text Colors -->
+    <color name="text_gray">#FF808080</color>
+    <color name="text_white">#FFFFFFFF</color>
+    <color name="text_black">#FF000000</color>
+</resources> 

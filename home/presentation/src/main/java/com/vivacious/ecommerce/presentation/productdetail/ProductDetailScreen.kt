@@ -23,13 +23,12 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.ThumbDown
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material.icons.filled.StarHalf
+import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -68,6 +67,14 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.palette.graphics.Palette
 import coil.compose.SubcomposeAsyncImage
 import com.vivacious.ecommerce.core.presentation.theme.EcommerceTheme
+import com.vivacious.ecommerce.core.presentation.theme.PriceGreen
+import com.vivacious.ecommerce.core.presentation.theme.DiscountRed
+import com.vivacious.ecommerce.core.presentation.theme.RatingBadRed
+import com.vivacious.ecommerce.core.presentation.theme.RatingNeutralOrange
+import com.vivacious.ecommerce.core.presentation.theme.RatingGoodGreen
+import com.vivacious.ecommerce.core.presentation.theme.DefaultBackground
+import com.vivacious.ecommerce.core.presentation.theme.TextGray
+import com.vivacious.ecommerce.core.presentation.theme.TextWhite
 import com.vivacious.ecommerce.domain.models.Product
 import com.vivacious.ecommerce.presentation.R
 
@@ -146,7 +153,7 @@ fun ProductDetailWithCollapsingToolbar(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var backgroundColor by remember { mutableStateOf(Color(147, 201, 172)) }
+    var backgroundColor by remember { mutableStateOf(DefaultBackground) }
     val minImageHeight = 80.dp
     val maxImageHeight = 440.dp
     val minImageHeightPx = with(LocalDensity.current) { minImageHeight.toPx() }
@@ -204,31 +211,28 @@ fun ProductDetailWithCollapsingToolbar(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 48.dp, bottom = 32.dp)
                     .clip(
-                        CircleShape.copy(
-                            bottomEnd = CornerSize(32.dp),
-                            bottomStart = CornerSize(32.dp),
-                            topStart = CornerSize(0.dp),
-                            topEnd = CornerSize(0.dp)
+                        RoundedCornerShape(
+                            bottomStart = 16.dp,
+                            bottomEnd = 16.dp
                         )
                     ),
-                onSuccess = { result ->
-                    val mutableBitmap = result.result.drawable.toBitmap(475, 475)
+                onSuccess = { state ->
+                    val mutableBitmap = state.result.drawable.toBitmap(475, 475)
                         .copy(Bitmap.Config.RGBA_F16, false)
                     val palette = Palette.from(mutableBitmap).generate()
                     palette.swatches.firstOrNull()?.let {
                         backgroundColor = Color(it.rgb)
                     }
-                },
+                }
             )
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 48.dp, start = 8.dp, end = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
                     onClick = { onBackClick.invoke() },
@@ -236,15 +240,15 @@ fun ProductDetailWithCollapsingToolbar(
                 ) {
                     Icon(
                         Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "",
-                        tint = Color.White,
+                        contentDescription = stringResource(R.string.back),
+                        tint = TextWhite,
                         modifier = Modifier.wrapContentSize()
                     )
                 }
                 Text(
-                    "#${product.id}",
+                    stringResource(R.string.product_id_format, product.id),
                     fontSize = 22.sp,
-                    color = Color.White,
+                    color = TextWhite,
                 )
             }
         }
@@ -285,31 +289,31 @@ fun ProductDetailWithCollapsingToolbar(
                         ) {
                             if (product.discountPercentage > 0) {
                                 Text(
-                                    "${String.format("%.2f", product.price)}€",
+                                    stringResource(R.string.price_format, product.price),
                                     fontSize = 16.sp,
-                                    color = Color.Gray,
+                                    color = TextGray,
                                     textDecoration = TextDecoration.LineThrough,
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
                                 Text(
-                                    "${String.format("%.2f", product.price * (1 - product.discountPercentage / 100))}€",
+                                    stringResource(R.string.price_format, product.price * (1 - product.discountPercentage / 100)),
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF2E7D32)
+                                    color = PriceGreen
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    "-${String.format("%.0f", product.discountPercentage)}%",
+                                    stringResource(R.string.discount_format, product.discountPercentage),
                                     fontSize = 16.sp,
-                                    color = Color.Red,
+                                    color = DiscountRed,
                                     fontWeight = FontWeight.Bold
                                 )
                             } else {
                                 Text(
-                                    "${String.format("%.2f", product.price)}€",
+                                    stringResource(R.string.price_format, product.price),
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF2E7D32)
+                                    color = PriceGreen
                                 )
                             }
                         }
@@ -320,18 +324,18 @@ fun ProductDetailWithCollapsingToolbar(
                             val (ratingIcon, ratingColor, ratingText) = when {
                                 product.rating < 3 -> Triple(
                                     Icons.Filled.ThumbDown,
-                                    Color(0xFFD32F2F),
-                                    "Má escolha"
+                                    RatingBadRed,
+                                    stringResource(R.string.bad_choice)
                                 )
                                 product.rating < 4 -> Triple(
                                     Icons.AutoMirrored.Filled.StarHalf,
-                                    Color(0xFFFF9800),
-                                    "Escolha neutra"
+                                    RatingNeutralOrange,
+                                    stringResource(R.string.neutral_choice)
                                 )
                                 else -> Triple(
                                     Icons.Filled.ThumbUp,
-                                    Color(0xFF4CAF50),
-                                    "Ótima escolha"
+                                    RatingGoodGreen,
+                                    stringResource(R.string.great_choice)
                                 )
                             }
                             Icon(
@@ -341,7 +345,7 @@ fun ProductDetailWithCollapsingToolbar(
                                 modifier = Modifier.padding(end = 4.dp)
                             )
                             Text(
-                                text = String.format("%.1f", product.rating),
+                                text = stringResource(R.string.rating_format, product.rating),
                                 fontSize = 16.sp,
                                 color = ratingColor,
                                 fontWeight = FontWeight.Medium
@@ -355,27 +359,27 @@ fun ProductDetailWithCollapsingToolbar(
                             )
                         }
                         Text(
-                            "Estoque: ${product.stock} unidades",
+                            stringResource(R.string.stock_format, product.stock),
                             fontSize = 16.sp,
-                            color = if (product.stock > 0) Color(0xFF2E7D32) else Color.Red,
+                            color = if (product.stock > 0) PriceGreen else DiscountRed,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Row(
                             modifier = Modifier.padding(bottom = 8.dp)
                         ) {
                             Text(
-                                "Marca: ${product.brand ?: "-"}",
+                                stringResource(R.string.brand_format, product.brand ?: "-"),
                                 fontSize = 14.sp,
                                 modifier = Modifier.weight(1f)
                             )
                             Text(
-                                "Categoria: ${product.category}",
+                                stringResource(R.string.category_format, product.category),
                                 fontSize = 14.sp,
                                 modifier = Modifier.weight(1f)
                             )
                         }
                         Text(
-                            "Descrição:",
+                            stringResource(R.string.description_label),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 4.dp)
@@ -403,7 +407,7 @@ fun ProductDetailWithCollapsingToolbar(
 
                                 Icon(
                                     icon,
-                                    contentDescription = "View favorites",
+                                    contentDescription = stringResource(R.string.view_favorites),
                                     modifier = modifier.wrapContentSize()
                                 )
                                 Text(
@@ -428,7 +432,7 @@ private fun ProductDetailScreenPreview() {
     EcommerceTheme {
         ProductDetailScreen(
             onBackClick = {},
-            productId = "1"
+            productId = stringResource(R.string.product_id_format, 1)
         )
     }
 }

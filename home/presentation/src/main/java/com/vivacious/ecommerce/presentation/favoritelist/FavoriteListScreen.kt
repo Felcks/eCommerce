@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,6 +52,9 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import coil.compose.SubcomposeAsyncImage
 import com.vivacious.ecommerce.domain.models.Product
 import com.vivacious.ecommerce.presentation.R
+import com.vivacious.ecommerce.core.presentation.theme.PriceGreen
+import com.vivacious.ecommerce.core.presentation.theme.DiscountRed
+import com.vivacious.ecommerce.core.presentation.theme.RatingGold
 import com.vivacious.ecommerce.presentation.home.ProductCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +80,7 @@ fun FavoriteListScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -126,7 +130,7 @@ fun FavoriteListScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                "Nenhum produto favorito adicionado",
+                                stringResource(R.string.no_favorite_products),
                                 style = TextStyle(textAlign = TextAlign.Center),
                                 fontSize = 18.sp
                             )
@@ -230,17 +234,17 @@ fun FavoriteProductCard(
                         .heightIn(min = 20.dp, max = 20.dp)
                 ) {
                     Text(
-                        "${String.format("%.2f", product.price)}€",
+                        stringResource(R.string.price_format, product.price),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32)
+                        color = PriceGreen
                     )
                     if (product.discountPercentage > 0) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            "-${String.format("%.0f", product.discountPercentage)}%",
+                            stringResource(R.string.discount_format, product.discountPercentage),
                             fontSize = 12.sp,
-                            color = Color.Red,
+                            color = DiscountRed,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -261,14 +265,14 @@ fun FavoriteProductCard(
                     }
                     Icon(
                         imageVector = ratingIcon,
-                        contentDescription = "Rating",
-                        tint = Color(0xFFFFD700),
+                        contentDescription = stringResource(R.string.rating),
+                        tint = RatingGold,
                         modifier = Modifier
                             .padding(end = 4.dp)
                             .size(16.dp)
                     )
                     Text(
-                        text = String.format("%.1f", product.rating),
+                        text = stringResource(R.string.rating_format, product.rating),
                         fontSize = 12.sp
                     )
                 }

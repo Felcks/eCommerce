@@ -1,22 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App -->
+    <string name="app_name">Ecommerce</string>
+
+    <!-- Navigation -->
+    <string name="home_screen_navigation">home_screen_navigation</string>
+    <string name="favorite_list_navigation_route">favorite_list_navigation_route</string>
+    <string name="product_detail_navigation_route">product_detail/{productId}</string>
+    <string name="store_review_navigation_route">store_review_navigation</string>
+
+    <!-- Home Screen -->
     <string name="home_scree_title">E-commerce</string>
+    <string name="search_products">Buscar produtos…</string>
+    <string name="search">Search</string>
+    <string name="view_favorites">View favorites</string>
+    <string name="searching_products">Buscando por "%s"...</string>
+    <string name="unexpected_error">Unexpected error</string>
+    <string name="no_products_found_for_search">Nenhum produto encontrado para "%s"</string>
+    <string name="no_products_available">Nenhum produto disponível</string>
     <string name="try_again">Tentar novamente</string>
+
+    <!-- Product Card -->
+    <string name="rating">Rating</string>
+    <string name="bad_choice">Má escolha</string>
+    <string name="neutral_choice">Escolha neutra</string>
+    <string name="great_choice">Ótima escolha</string>
+    <string name="unsupported_type">Tipo não suportado</string>
+
+    <!-- Product Detail -->
+    <string name="product_id_format">#%d</string>
+    <string name="price_format">%.2f€</string>
+    <string name="discount_format">-%.0f%%</string>
+    <string name="rating_format">%.1f</string>
+    <string name="stock_format">Estoque: %d unidades</string>
+    <string name="brand_format">Marca: %s</string>
+    <string name="category_format">Categoria: %s</string>
+    <string name="description_label">Descrição:</string>
+    <string name="add_to_favorites">Adicionar aos Favoritos</string>
+    <string name="remove_from_favorites">Remover dos Favoritos</string>
+
+    <!-- Favorite List -->
+    <string name="favorite_list_screen_title">Produtos Favoritos</string>
+    <string name="back">Voltar</string>
+    <string name="no_favorite_products">Nenhum produto favorito adicionado</string>
+
+    <!-- Store Review -->
+    <string name="evaluate_store">Avaliar Loja</string>
+    <string name="store_evaluation">Avaliação da Loja</string>
+    <string name="user_name_label">Nome do usuário</string>
+    <string name="user_name_required">Nome é obrigatório</string>
+    <string name="email_label">Email</string>
+    <string name="email_required">Email é obrigatório</string>
+    <string name="email_invalid">Email inválido</string>
+    <string name="phone_label">Número de telefone</string>
+    <string name="phone_required">Número é obrigatório</string>
+    <string name="phone_invalid">Apenas dígitos são permitidos</string>
+    <string name="promo_code_label">Código promocional</string>
+    <string name="promo_code_required">Código promocional é obrigatório</string>
+    <string name="promo_code_invalid">Apenas letras maiúsculas e hífens, 3-7 caracteres</string>
+    <string name="delivery_date_label">Data de entrega (dd/MM/yyyy)</string>
+    <string name="date_required">Data é obrigatória</string>
+    <string name="date_invalid">Data inválida (use dd/MM/yyyy)</string>
+    <string name="monday_not_allowed">Segunda-feira não é permitida</string>
+    <string name="future_date_not_allowed">Data não pode estar no futuro</string>
+    <string name="rating_required">Classificação é obrigatória</string>
+    <string name="send_evaluation">Enviar Avaliação</string>
+    <string name="evaluation_sent_success">Avaliação enviada com sucesso!</string>
+    <string name="rating_label">Classificação</string>
+
+    <!-- Rating Values -->
+    <string name="rating_bad">Mau</string>
+    <string name="rating_satisfactory">Satisfatório</string>
+    <string name="rating_good">Bom</string>
+    <string name="rating_very_good">Muito Bom</string>
+    <string name="rating_excellent">Excelente</string>
+
+    <!-- Validation Messages -->
+    <string name="email_required_validation">Email é obrigatório</string>
+    <string name="email_invalid_validation">Email inválido</string>
+    <string name="phone_required_validation">Telefone é obrigatório</string>
+    <string name="phone_invalid_validation">Telefone inválido</string>
+    <string name="promo_code_invalid_validation">Código promocional deve ter 6-10 caracteres alfanuméricos</string>
+    <string name="date_required_validation">Data é obrigatória</string>
+    <string name="future_date_validation">Data não pode ser futura</string>
+    <string name="invalid_date_format">Data inválida. Use o formato dd/MM/yyyy</string>
+    <string name="rating_required_validation">Rating é obrigatório</string>
+
+    <!-- Legacy (to be removed) -->
     <string name="weight">Peso</string>
     <string name="height">Altura</string>
     <string name="unexpected_error_message">Erro inesperado</string>
-    <string name="favorite_list_screen_title">Produtos Favoritos</string>
     <string name="catch_pokemon">Adicionar aos Favoritos</string>
-    <string name="app_name">Ecommerce</string>
-    <string name="search_products">Buscar produtos…</string>
     <string name="no_products_found">Nenhum produto encontrado</string>
     <string name="loading_products">Carregando produtos...</string>
     <string name="error_loading_products">Erro ao carregar produtos</string>
     <string name="favorite_list">Lista de Favoritos</string>
     <string name="no_favorites">Nenhum favorito adicionado</string>
     <string name="product_detail">Detalhes do Produto</string>
-    <string name="add_to_favorites">Adicionar aos Favoritos</string>
-    <string name="remove_from_favorites">Remover dos Favoritos</string>
     <string name="original_price">Preço Original</string>
     <string name="discounted_price">Preço com Desconto</string>
     <string name="discount_percentage">Desconto</string>
@@ -24,13 +104,9 @@
     <string name="brand">Marca</string>
     <string name="category">Categoria</string>
     <string name="description">Descrição</string>
-    <string name="evaluate_store">Avaliar Loja</string>
     <string name="validate_form">Validar Formulário</string>
     <string name="email">Email</string>
     <string name="phone">Telefone</string>
     <string name="promo_code">Código Promocional (opcional)</string>
     <string name="date">Data (dd/MM/yyyy)</string>
-    <string name="rating">Avaliação</string>
-    <string name="back">Voltar</string>
-    <string name="evaluating_store">Avaliação da Loja</string>
 </resources>
