@@ -52,6 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -282,6 +283,7 @@ fun ProductDetailWithCollapsingToolbar(
                                     "R$ ${String.format("%.2f", product.price)}",
                                     fontSize = 16.sp,
                                     color = Color.Gray,
+                                    textDecoration = TextDecoration.LineThrough,
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
                                 Text(
