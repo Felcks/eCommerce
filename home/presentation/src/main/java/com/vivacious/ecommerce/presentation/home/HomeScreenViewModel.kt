@@ -24,13 +24,8 @@ class HomeScreenViewModel @Inject constructor(
     private val _products: MutableStateFlow<PagingData<ProductSummary>> = MutableStateFlow(PagingData.empty())
     val products = _products.asStateFlow()
 
-    // Flag para controlar se já carregou produtos inicialmente
     private var hasLoadedInitialProducts = false
-    
-    // Flag para controlar se há uma busca ativa
     private var hasActiveSearch = false
-    
-    // Cache para os produtos normais
     private var cachedProducts: PagingData<ProductSummary>? = null
 
     fun handleScreenEvents(event: HomeScreenEvent) {
@@ -43,20 +38,17 @@ class HomeScreenViewModel @Inject constructor(
                 }
             }
             HomeScreenEvent.LoadMoreProducts -> {
-                // Não recarregar se já temos produtos
                 if (products.value == PagingData.empty<ProductSummary>()) {
                     loadProducts()
                 }
             }
             is HomeScreenEvent.SearchProducts -> {
                 if (event.query.isEmpty()) {
-                    // Se a query estiver vazia e havia uma busca ativa, voltar para produtos normais
                     if (hasActiveSearch) {
-                        // Restaurar produtos do cache se disponível
                         cachedProducts?.let { cached ->
                             _products.value = cached
                         } ?: run {
-                            hasLoadedInitialProducts = false // Reset para forçar carregamento
+                            hasLoadedInitialProducts = false
                             loadProducts()
                         }
                         hasActiveSearch = false
@@ -79,7 +71,7 @@ class HomeScreenViewModel @Inject constructor(
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _products.value = it
-                    // Cache os produtos normais
+
                     if (!hasActiveSearch) {
                         cachedProducts = it
                     }

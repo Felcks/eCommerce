@@ -74,7 +74,6 @@ fun StoreReviewScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Nome do usuário
             OutlinedTextField(
                 value = state.userName,
                 onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateUserName(it)) },
@@ -90,7 +89,6 @@ fun StoreReviewScreen(
                 )
             }
 
-            // Email
             OutlinedTextField(
                 value = state.email,
                 onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateEmail(it)) },
@@ -118,11 +116,9 @@ fun StoreReviewScreen(
                 }
             }
 
-            // Número de telefone
             OutlinedTextField(
                 value = state.phoneNumber,
                 onValueChange = {
-                    // Apenas dígitos
                     val filtered = it.filter { char -> char.isDigit() }
                     viewModel.handleScreenEvents(StoreReviewEvent.UpdatePhoneNumber(filtered))
                 },
@@ -150,11 +146,9 @@ fun StoreReviewScreen(
                 }
             }
 
-            // Código promocional
             OutlinedTextField(
                 value = state.promotionalCode,
                 onValueChange = {
-                    // Apenas letras maiúsculas e hífens
                     val filtered = it.uppercase().filter { char -> char.isLetter() || char == '-' }
                     viewModel.handleScreenEvents(StoreReviewEvent.UpdatePromotionalCode(filtered))
                 },
@@ -181,7 +175,6 @@ fun StoreReviewScreen(
                 }
             }
 
-            // Data de entrega
             OutlinedTextField(
                 value = state.deliveryDate,
                 onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateDeliveryDate(it)) },
@@ -228,7 +221,6 @@ fun StoreReviewScreen(
                 }
             }
 
-            // Classificação (dropdown)
             RatingDropdown(
                 selectedRating = state.rating,
                 onRatingSelected = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateRating(it)) },
@@ -244,7 +236,6 @@ fun StoreReviewScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botão de envio
             Button(
                 onClick = { viewModel.handleScreenEvents(StoreReviewEvent.SubmitReview) },
                 modifier = Modifier.fillMaxWidth(),
@@ -259,7 +250,6 @@ fun StoreReviewScreen(
                 Text("Enviar Avaliação")
             }
 
-            // Mensagem de sucesso
             if (state.isSubmitted) {
                 Text(
                     text = "Avaliação enviada com sucesso!",

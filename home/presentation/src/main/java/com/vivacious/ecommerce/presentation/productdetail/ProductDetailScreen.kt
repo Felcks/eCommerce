@@ -1,4 +1,4 @@
-package com.vivacious.ecommerce.presentation.pokemondetail
+package com.vivacious.ecommerce.presentation.productdetail
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.background
@@ -150,17 +150,19 @@ fun ProductDetailWithCollapsingToolbar(
     val imageHeightPx = remember { mutableStateOf(maxImageHeightPx) }
     val lazyListState = rememberLazyListState()
 
-    // NestedScroll para colapsar a imagem
+    // NestedScroll to collapse/expand the image
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val delta = available.y
                 val newHeight = imageHeightPx.value + delta
-                return if (delta < 0) { // Scroll para cima, colapsa
+                // Scroll up collapses
+                return if (delta < 0) {
                     val consumed = if (newHeight > minImageHeightPx) delta else minImageHeightPx - imageHeightPx.value
                     imageHeightPx.value = (imageHeightPx.value + consumed).coerceIn(minImageHeightPx, maxImageHeightPx)
                     Offset(0f, consumed)
-                } else if (delta > 0) { // Scroll para baixo, expande
+                // Scroll down expands
+                } else if (delta > 0) {
                     val consumed =
                         if (lazyListState.firstVisibleItemIndex == 0 && lazyListState.firstVisibleItemScrollOffset == 0) {
                             if (newHeight < maxImageHeightPx) delta else maxImageHeightPx - imageHeightPx.value
@@ -179,7 +181,6 @@ fun ProductDetailWithCollapsingToolbar(
             .fillMaxSize()
             .background(backgroundColor)
     ) {
-        // Imagem do produto colapsável com fundo colorido
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -217,7 +218,7 @@ fun ProductDetailWithCollapsingToolbar(
                     }
                 },
             )
-            // Top bar sobreposta
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -243,8 +244,7 @@ fun ProductDetailWithCollapsingToolbar(
                 )
             }
         }
-        
-        // Conteúdo principal com fundo branco
+
         LazyColumn(
             state = lazyListState,
             modifier = Modifier
@@ -269,14 +269,12 @@ fun ProductDetailWithCollapsingToolbar(
                     Column(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        // Title
                         Text(
                             product.title,
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        // Price and Discount
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(bottom = 8.dp)
@@ -311,7 +309,6 @@ fun ProductDetailWithCollapsingToolbar(
                                 )
                             }
                         }
-                        // Rating
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(bottom = 8.dp)
@@ -327,14 +324,12 @@ fun ProductDetailWithCollapsingToolbar(
                                 fontSize = 16.sp
                             )
                         }
-                        // Stock
                         Text(
                             "Estoque: ${product.stock} unidades",
                             fontSize = 16.sp,
                             color = if (product.stock > 0) Color(0xFF2E7D32) else Color.Red,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        // Brand and Category
                         Row(
                             modifier = Modifier.padding(bottom = 8.dp)
                         ) {
@@ -349,7 +344,6 @@ fun ProductDetailWithCollapsingToolbar(
                                 modifier = Modifier.weight(1f)
                             )
                         }
-                        // Description
                         Text(
                             "Descrição:",
                             fontSize = 18.sp,

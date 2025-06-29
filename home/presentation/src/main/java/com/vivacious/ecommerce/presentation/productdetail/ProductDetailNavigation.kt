@@ -1,4 +1,4 @@
-package com.vivacious.ecommerce.presentation.pokemondetail
+package com.vivacious.ecommerce.presentation.productdetail
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

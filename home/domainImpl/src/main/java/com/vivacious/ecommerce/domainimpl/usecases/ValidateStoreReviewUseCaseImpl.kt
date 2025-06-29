@@ -15,33 +15,28 @@ class ValidateStoreReviewUseCaseImpl @Inject constructor() : ValidateStoreReview
     override suspend fun invoke(review: StoreReview): ValidationResult {
         val errors = mutableListOf<ValidationError>()
 
-        // Validação do nome do usuário
         if (review.userName.isBlank()) {
             errors.add(ValidationError.EmptyUserName)
         }
 
-        // Validação do email
         if (review.email.isBlank()) {
             errors.add(ValidationError.EmptyEmail)
         } else if (!isValidEmail(review.email)) {
             errors.add(ValidationError.InvalidEmail)
         }
 
-        // Validação do número de telefone
         if (review.phoneNumber.isBlank()) {
             errors.add(ValidationError.EmptyPhoneNumber)
         } else if (!isValidPhoneNumber(review.phoneNumber)) {
             errors.add(ValidationError.InvalidPhoneNumber)
         }
 
-        // Validação do código promocional
         if (review.promotionalCode.isBlank()) {
             errors.add(ValidationError.EmptyPromotionalCode)
         } else if (!isValidPromotionalCode(review.promotionalCode)) {
             errors.add(ValidationError.InvalidPromotionalCode)
         }
 
-        // Validação da data de entrega
         if (review.deliveryDate.isBlank()) {
             errors.add(ValidationError.EmptyDeliveryDate)
         } else {
@@ -61,12 +56,10 @@ class ValidateStoreReviewUseCaseImpl @Inject constructor() : ValidateStoreReview
     }
 
     private fun isValidPhoneNumber(phoneNumber: String): Boolean {
-        // Apenas dígitos
         return phoneNumber.all { it.isDigit() }
     }
 
     private fun isValidPromotionalCode(code: String): Boolean {
-        // Apenas letras maiúsculas e hífens, mínimo 3 e máximo 7 caracteres, sem acentos
         val codeRegex = "^[A-Z-]{3,7}$"
         return code.matches(codeRegex.toRegex())
     }
@@ -79,12 +72,10 @@ class ValidateStoreReviewUseCaseImpl @Inject constructor() : ValidateStoreReview
             val deliveryDate = LocalDate.parse(dateString, formatter)
             val today = LocalDate.now()
 
-            // Verificar se não é segunda-feira
             if (deliveryDate.dayOfWeek == DayOfWeek.MONDAY) {
                 errors.add(ValidationError.MondayNotAllowed)
             }
 
-            // Verificar se não está no futuro
             if (deliveryDate.isAfter(today)) {
                 errors.add(ValidationError.FutureDateNotAllowed)
             }

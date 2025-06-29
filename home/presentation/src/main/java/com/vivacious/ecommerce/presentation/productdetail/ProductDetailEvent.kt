@@ -1,4 +1,4 @@
-package com.vivacious.ecommerce.presentation.pokemondetail
+package com.vivacious.ecommerce.presentation.productdetail
 
 sealed class ProductDetailEvent {
     data class LoadProduct(val productId: String) : ProductDetailEvent()

@@ -1,11 +1,7 @@
 package com.vivacious.ecommerce.presentation.favoritelist
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import com.vivacious.ecommerce.domain.models.Product
-import com.vivacious.ecommerce.domain.models.ProductSummary
 import com.vivacious.ecommerce.domain.usecases.GetFavoriteProductsUseCase
 import com.vivacious.ecommerce.domain.usecases.RemoveFavoriteProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,7 +50,6 @@ class FavoriteListViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             removeFavoriteProductUseCase(productId).collect { success ->
                 if (success) {
-                    // Recarregar a lista após remover
                     loadFavoriteProducts()
                 }
             }

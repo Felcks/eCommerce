@@ -9,8 +9,8 @@ import com.vivacious.ecommerce.presentation.favoritelist.favoriteList
 import com.vivacious.ecommerce.presentation.favoritelist.navigateToFavoriteList
 import com.vivacious.ecommerce.presentation.home.HomeScreenNavigationRoute
 import com.vivacious.ecommerce.presentation.home.homeScreen
-import com.vivacious.ecommerce.presentation.pokemondetail.navigateToProductDetail
-import com.vivacious.ecommerce.presentation.pokemondetail.productDetail
+import com.vivacious.ecommerce.presentation.productdetail.navigateToProductDetail
+import com.vivacious.ecommerce.presentation.productdetail.productDetail
 import com.vivacious.ecommerce.presentation.storereview.navigateToStoreReview
 import com.vivacious.ecommerce.presentation.storereview.storeReview
 

@@ -85,15 +85,12 @@ fun HomeScreen(
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
 
-    // Preservar o estado do scroll usando rememberSaveable
     val gridState = rememberLazyGridState()
 
-    // Carregar produtos apenas uma vez na inicialização
     LaunchedEffect(Unit) {
         homeScreenViewModel.handleScreenEvents(HomeScreenEvent.GetFreshProducts)
     }
 
-    // Debounced search com 0,5 segundos
     LaunchedEffect(searchQuery) {
         if (searchQuery.isNotEmpty()) {
             isSearching = true
@@ -101,15 +98,13 @@ fun HomeScreen(
             homeScreenViewModel.handleScreenEvents(HomeScreenEvent.SearchProducts(searchQuery))
             isSearching = false
         } else if (searchQuery.isEmpty() && homeScreenViewModel.hasSearchQuery()) {
-            // Só limpar a busca se havia uma busca ativa
             homeScreenViewModel.handleScreenEvents(HomeScreenEvent.SearchProducts(""))
         }
     }
 
-    // Preservar o estado do scroll quando a tela for recriada
+    // Keep state when recreated
     LaunchedEffect(products.itemCount) {
         if (products.itemCount > 0 && gridState.firstVisibleItemIndex > 0) {
-            // Restaurar a posição do scroll se necessário
             gridState.animateScrollToItem(gridState.firstVisibleItemIndex)
         }
     }
@@ -141,7 +136,6 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            // Search Bar
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -245,8 +239,8 @@ fun HomeScreen(
 fun ProductList(
     products: LazyPagingItems<ProductSummary>,
     onProductClick: (productId: String) -> Unit,
-    gridState: LazyGridState = rememberLazyGridState(),
     modifier: Modifier = Modifier,
+    gridState: LazyGridState = rememberLazyGridState(),
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),

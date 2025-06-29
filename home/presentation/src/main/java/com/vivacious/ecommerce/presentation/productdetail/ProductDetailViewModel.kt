@@ -1,4 +1,4 @@
-package com.vivacious.ecommerce.presentation.pokemondetail
+package com.vivacious.ecommerce.presentation.productdetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +7,7 @@ import com.vivacious.ecommerce.domain.usecases.GetProductUseCase
 import com.vivacious.ecommerce.domain.usecases.AddFavoriteProductUseCase
 import com.vivacious.ecommerce.domain.usecases.RemoveFavoriteProductUseCase
 import com.vivacious.ecommerce.domain.usecases.IsProductFavoriteUseCase
+import com.vivacious.ecommerce.domain.wrapper.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,25 +43,24 @@ class ProductDetailViewModel @Inject constructor(
             
             getProductUseCase(productId).collect { result ->
                 when (result) {
-                    is com.vivacious.ecommerce.domain.wrapper.Resource.Success -> {
+                    is Resource.Success -> {
                         val product = result.data
                         _state.value = _state.value.copy(
                             loading = false,
                             product = product
                         )
-                        
-                        // Verificar se o produto é favorito
+
                         product?.let { 
                             checkIfProductIsFavorite(it.id)
                         }
                     }
-                    is com.vivacious.ecommerce.domain.wrapper.Resource.Error -> {
+                    is Resource.Error -> {
                         _state.value = _state.value.copy(
                             loading = false,
                             errorMessage = result.errorMessage
                         )
                     }
-                    is com.vivacious.ecommerce.domain.wrapper.Resource.Loading -> {
+                    is Resource.Loading -> {
                         _state.value = _state.value.copy(loading = true)
                     }
                 }
@@ -82,14 +82,12 @@ class ProductDetailViewModel @Inject constructor(
         if (currentProduct != null) {
             viewModelScope.launch(Dispatchers.IO) {
                 if (isCurrentlyFavorite) {
-                    // Remover dos favoritos
                     removeFavoriteProductUseCase(currentProduct.id).collect { success ->
                         if (success) {
                             _state.value = _state.value.copy(isFavorite = false)
                         }
                     }
                 } else {
-                    // Adicionar aos favoritos
                     addFavoriteProductUseCase(currentProduct).collect { success ->
                         if (success) {
                             _state.value = _state.value.copy(isFavorite = true)

@@ -89,5 +89,5 @@ sealed class StoreReviewEvent {
     data class UpdatePromotionalCode(val promotionalCode: String) : StoreReviewEvent()
     data class UpdateDeliveryDate(val deliveryDate: String) : StoreReviewEvent()
     data class UpdateRating(val rating: Rating) : StoreReviewEvent()
-    object SubmitReview : StoreReviewEvent()
+    data object SubmitReview : StoreReviewEvent()
 } 
