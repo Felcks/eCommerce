@@ -5,14 +5,14 @@ import com.vivacious.domainimpl.usecases.GetFavoriteProductsUseCaseImpl
 import com.vivacious.domainimpl.usecases.GetProductUseCaseImpl
 import com.vivacious.domainimpl.usecases.GetProductsUseCaseImpl
 import com.vivacious.domainimpl.usecases.SearchProductsUseCaseImpl
-import com.vivacious.domainimpl.usecases.ValidateProductReviewUseCaseImpl
+import com.vivacious.domainimpl.usecases.ValidateStoreReviewUseCaseImpl
 import com.vivacious.pokedex.domain.repositories.ProductRepository
 import com.vivacious.pokedex.domain.usecases.AddFavoriteProductUseCase
 import com.vivacious.pokedex.domain.usecases.GetFavoriteProductsUseCase
 import com.vivacious.pokedex.domain.usecases.GetProductUseCase
 import com.vivacious.pokedex.domain.usecases.GetProductsUseCase
 import com.vivacious.pokedex.domain.usecases.SearchProductsUseCase
-import com.vivacious.pokedex.domain.usecases.ValidateProductReviewUseCase
+import com.vivacious.pokedex.domain.usecases.ValidateStoreReviewUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,7 +64,7 @@ object UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideValidateProductReviewUseCase(): ValidateProductReviewUseCase {
-        return ValidateProductReviewUseCaseImpl()
+    fun provideValidateProductReviewUseCase(): ValidateStoreReviewUseCase {
+        return ValidateStoreReviewUseCaseImpl()
     }
 }

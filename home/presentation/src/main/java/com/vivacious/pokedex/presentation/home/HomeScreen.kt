@@ -88,7 +88,7 @@ fun HomeScreen(
     val products = homeScreenViewModel.products.collectAsLazyPagingItems()
     var searchQuery by remember { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
-    
+
     // Preservar o estado do scroll
     val gridState = rememberLazyGridState()
 
@@ -133,7 +133,7 @@ fun HomeScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = goToProductReview,
-                content = { Text("Avaliar produto") }
+                content = { Text(stringResource(R.string.evaluate_store)) }
             )
         }
     ) { innerPadding ->
@@ -142,7 +142,7 @@ fun HomeScreen(
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                placeholder = { Text("Buscar produtos...") },
+                placeholder = { Text(stringResource(R.string.search_products)) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
                 trailingIcon = {
                     if (isSearching && searchQuery.isNotEmpty()) {
@@ -306,7 +306,7 @@ fun ProductCard(
                     .height(160.dp)
                     .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
             )
-            
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -322,9 +322,9 @@ fun ProductCard(
                         .heightIn(min = 40.dp, max = 40.dp),
                     lineHeight = 20.sp
                 )
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -347,9 +347,9 @@ fun ProductCard(
                         )
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier

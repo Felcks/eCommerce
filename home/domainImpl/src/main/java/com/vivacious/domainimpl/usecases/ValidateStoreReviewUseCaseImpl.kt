@@ -1,7 +1,7 @@
 package com.vivacious.domainimpl.usecases
 
-import com.vivacious.pokedex.domain.models.ProductReview
-import com.vivacious.pokedex.domain.usecases.ValidateProductReviewUseCase
+import com.vivacious.pokedex.domain.models.StoreReview
+import com.vivacious.pokedex.domain.usecases.ValidateStoreReviewUseCase
 import com.vivacious.pokedex.domain.usecases.ValidationError
 import com.vivacious.pokedex.domain.usecases.ValidationResult
 import java.time.DayOfWeek
@@ -10,9 +10,9 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import javax.inject.Inject
 
-class ValidateProductReviewUseCaseImpl @Inject constructor() : ValidateProductReviewUseCase {
+class ValidateStoreReviewUseCaseImpl @Inject constructor() : ValidateStoreReviewUseCase {
 
-    override suspend fun invoke(review: ProductReview): ValidationResult {
+    override suspend fun invoke(review: StoreReview): ValidationResult {
         val errors = mutableListOf<ValidationError>()
 
         // Validação do nome do usuário

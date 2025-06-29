@@ -195,7 +195,7 @@ fun ProductDetailWithCollapsingToolbar(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 32.dp)
+                    .padding(top = 48.dp)
                     .clip(
                         CircleShape.copy(
                             bottomEnd = CornerSize(32.dp),
@@ -217,7 +217,7 @@ fun ProductDetailWithCollapsingToolbar(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp, start = 8.dp, end = 16.dp),
+                    .padding(top = 48.dp, start = 8.dp, end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {

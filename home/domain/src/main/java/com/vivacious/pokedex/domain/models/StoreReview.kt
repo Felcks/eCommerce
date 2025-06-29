@@ -1,6 +1,6 @@
 package com.vivacious.pokedex.domain.models
 
-data class ProductReview(
+data class StoreReview(
     val userName: String,
     val email: String,
     val phoneNumber: String,

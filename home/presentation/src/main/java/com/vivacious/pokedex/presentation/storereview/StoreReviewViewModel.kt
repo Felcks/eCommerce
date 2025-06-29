@@ -1,12 +1,11 @@
-package com.vivacious.pokedex.presentation.productreview
+package com.vivacious.pokedex.presentation.storereview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vivacious.pokedex.domain.models.ProductReview
+import com.vivacious.pokedex.domain.models.StoreReview
 import com.vivacious.pokedex.domain.models.Rating
-import com.vivacious.pokedex.domain.usecases.ValidateProductReviewUseCase
+import com.vivacious.pokedex.domain.usecases.ValidateStoreReviewUseCase
 import com.vivacious.pokedex.domain.usecases.ValidationError
-import com.vivacious.pokedex.domain.usecases.ValidationResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,34 +13,34 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductReviewViewModel @Inject constructor(
-    private val validateProductReviewUseCase: ValidateProductReviewUseCase
+class StoreReviewViewModel @Inject constructor(
+    private val validateStoreReviewUseCase: ValidateStoreReviewUseCase
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(ProductReviewState())
+    private val _state = MutableStateFlow(StoreReviewState())
     val state = _state.asStateFlow()
 
-    fun handleScreenEvents(event: ProductReviewEvent) {
+    fun handleScreenEvents(event: StoreReviewEvent) {
         when (event) {
-            is ProductReviewEvent.UpdateUserName -> {
+            is StoreReviewEvent.UpdateUserName -> {
                 _state.value = _state.value.copy(userName = event.userName)
             }
-            is ProductReviewEvent.UpdateEmail -> {
+            is StoreReviewEvent.UpdateEmail -> {
                 _state.value = _state.value.copy(email = event.email)
             }
-            is ProductReviewEvent.UpdatePhoneNumber -> {
+            is StoreReviewEvent.UpdatePhoneNumber -> {
                 _state.value = _state.value.copy(phoneNumber = event.phoneNumber)
             }
-            is ProductReviewEvent.UpdatePromotionalCode -> {
+            is StoreReviewEvent.UpdatePromotionalCode -> {
                 _state.value = _state.value.copy(promotionalCode = event.promotionalCode)
             }
-            is ProductReviewEvent.UpdateDeliveryDate -> {
+            is StoreReviewEvent.UpdateDeliveryDate -> {
                 _state.value = _state.value.copy(deliveryDate = event.deliveryDate)
             }
-            is ProductReviewEvent.UpdateRating -> {
+            is StoreReviewEvent.UpdateRating -> {
                 _state.value = _state.value.copy(rating = event.rating)
             }
-            ProductReviewEvent.SubmitReview -> {
+            StoreReviewEvent.SubmitReview -> {
                 validateAndSubmitReview()
             }
         }
@@ -51,7 +50,7 @@ class ProductReviewViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
 
-            val review = ProductReview(
+            val review = StoreReview(
                 userName = _state.value.userName,
                 email = _state.value.email,
                 phoneNumber = _state.value.phoneNumber,
@@ -60,7 +59,7 @@ class ProductReviewViewModel @Inject constructor(
                 rating = _state.value.rating
             )
 
-            val validationResult = validateProductReviewUseCase(review)
+            val validationResult = validateStoreReviewUseCase(review)
 
             _state.value = _state.value.copy(
                 isLoading = false,
@@ -71,7 +70,7 @@ class ProductReviewViewModel @Inject constructor(
     }
 }
 
-data class ProductReviewState(
+data class StoreReviewState(
     val userName: String = "",
     val email: String = "",
     val phoneNumber: String = "",
@@ -83,12 +82,12 @@ data class ProductReviewState(
     val isSubmitted: Boolean = false
 )
 
-sealed class ProductReviewEvent {
-    data class UpdateUserName(val userName: String) : ProductReviewEvent()
-    data class UpdateEmail(val email: String) : ProductReviewEvent()
-    data class UpdatePhoneNumber(val phoneNumber: String) : ProductReviewEvent()
-    data class UpdatePromotionalCode(val promotionalCode: String) : ProductReviewEvent()
-    data class UpdateDeliveryDate(val deliveryDate: String) : ProductReviewEvent()
-    data class UpdateRating(val rating: Rating) : ProductReviewEvent()
-    object SubmitReview : ProductReviewEvent()
+sealed class StoreReviewEvent {
+    data class UpdateUserName(val userName: String) : StoreReviewEvent()
+    data class UpdateEmail(val email: String) : StoreReviewEvent()
+    data class UpdatePhoneNumber(val phoneNumber: String) : StoreReviewEvent()
+    data class UpdatePromotionalCode(val promotionalCode: String) : StoreReviewEvent()
+    data class UpdateDeliveryDate(val deliveryDate: String) : StoreReviewEvent()
+    data class UpdateRating(val rating: Rating) : StoreReviewEvent()
+    object SubmitReview : StoreReviewEvent()
 } 

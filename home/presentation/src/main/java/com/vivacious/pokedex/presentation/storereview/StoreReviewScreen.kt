@@ -1,15 +1,13 @@
-package com.vivacious.pokedex.presentation.productreview
+package com.vivacious.pokedex.presentation.storereview
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -33,28 +31,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.vivacious.pokedex.domain.models.Rating
 import com.vivacious.pokedex.domain.usecases.ValidationError
+import com.vivacious.pokedex.presentation.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductReviewScreen(
+fun StoreReviewScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ProductReviewViewModel = hiltViewModel()
+    viewModel: StoreReviewViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Avaliação de Produto") },
+                title = { Text(stringResource(R.string.evaluating_store)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -77,7 +76,7 @@ fun ProductReviewScreen(
             // Nome do usuário
             OutlinedTextField(
                 value = state.userName,
-                onValueChange = { viewModel.handleScreenEvents(ProductReviewEvent.UpdateUserName(it)) },
+                onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateUserName(it)) },
                 label = { Text("Nome do usuário") },
                 modifier = Modifier.fillMaxWidth(),
                 isError = state.validationErrors.contains(ValidationError.EmptyUserName)
@@ -93,12 +92,12 @@ fun ProductReviewScreen(
             // Email
             OutlinedTextField(
                 value = state.email,
-                onValueChange = { viewModel.handleScreenEvents(ProductReviewEvent.UpdateEmail(it)) },
+                onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateEmail(it)) },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                isError = state.validationErrors.contains(ValidationError.EmptyEmail) || 
-                         state.validationErrors.contains(ValidationError.InvalidEmail)
+                isError = state.validationErrors.contains(ValidationError.EmptyEmail) ||
+                        state.validationErrors.contains(ValidationError.InvalidEmail)
             )
             when {
                 state.validationErrors.contains(ValidationError.EmptyEmail) -> {
@@ -108,6 +107,7 @@ fun ProductReviewScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
+
                 state.validationErrors.contains(ValidationError.InvalidEmail) -> {
                     Text(
                         text = "Email inválido",
@@ -120,16 +120,16 @@ fun ProductReviewScreen(
             // Número de telefone
             OutlinedTextField(
                 value = state.phoneNumber,
-                onValueChange = { 
+                onValueChange = {
                     // Apenas dígitos
                     val filtered = it.filter { char -> char.isDigit() }
-                    viewModel.handleScreenEvents(ProductReviewEvent.UpdatePhoneNumber(filtered))
+                    viewModel.handleScreenEvents(StoreReviewEvent.UpdatePhoneNumber(filtered))
                 },
                 label = { Text("Número de telefone") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                isError = state.validationErrors.contains(ValidationError.EmptyPhoneNumber) || 
-                         state.validationErrors.contains(ValidationError.InvalidPhoneNumber)
+                isError = state.validationErrors.contains(ValidationError.EmptyPhoneNumber) ||
+                        state.validationErrors.contains(ValidationError.InvalidPhoneNumber)
             )
             when {
                 state.validationErrors.contains(ValidationError.EmptyPhoneNumber) -> {
@@ -139,6 +139,7 @@ fun ProductReviewScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
+
                 state.validationErrors.contains(ValidationError.InvalidPhoneNumber) -> {
                     Text(
                         text = "Apenas dígitos são permitidos",
@@ -151,15 +152,15 @@ fun ProductReviewScreen(
             // Código promocional
             OutlinedTextField(
                 value = state.promotionalCode,
-                onValueChange = { 
+                onValueChange = {
                     // Apenas letras maiúsculas e hífens
                     val filtered = it.uppercase().filter { char -> char.isLetter() || char == '-' }
-                    viewModel.handleScreenEvents(ProductReviewEvent.UpdatePromotionalCode(filtered))
+                    viewModel.handleScreenEvents(StoreReviewEvent.UpdatePromotionalCode(filtered))
                 },
                 label = { Text("Código promocional") },
                 modifier = Modifier.fillMaxWidth(),
-                isError = state.validationErrors.contains(ValidationError.EmptyPromotionalCode) || 
-                         state.validationErrors.contains(ValidationError.InvalidPromotionalCode)
+                isError = state.validationErrors.contains(ValidationError.EmptyPromotionalCode) ||
+                        state.validationErrors.contains(ValidationError.InvalidPromotionalCode)
             )
             when {
                 state.validationErrors.contains(ValidationError.EmptyPromotionalCode) -> {
@@ -169,6 +170,7 @@ fun ProductReviewScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
+
                 state.validationErrors.contains(ValidationError.InvalidPromotionalCode) -> {
                     Text(
                         text = "Apenas letras maiúsculas e hífens, 3-7 caracteres",
@@ -181,14 +183,14 @@ fun ProductReviewScreen(
             // Data de entrega
             OutlinedTextField(
                 value = state.deliveryDate,
-                onValueChange = { viewModel.handleScreenEvents(ProductReviewEvent.UpdateDeliveryDate(it)) },
+                onValueChange = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateDeliveryDate(it)) },
                 label = { Text("Data de entrega (dd/MM/yyyy)") },
                 modifier = Modifier.fillMaxWidth(),
-                isError = state.validationErrors.any { 
-                    it is ValidationError.EmptyDeliveryDate || 
-                    it is ValidationError.InvalidDeliveryDate ||
-                    it is ValidationError.MondayNotAllowed ||
-                    it is ValidationError.FutureDateNotAllowed
+                isError = state.validationErrors.any {
+                    it is ValidationError.EmptyDeliveryDate ||
+                            it is ValidationError.InvalidDeliveryDate ||
+                            it is ValidationError.MondayNotAllowed ||
+                            it is ValidationError.FutureDateNotAllowed
                 }
             )
             when {
@@ -199,6 +201,7 @@ fun ProductReviewScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
+
                 state.validationErrors.contains(ValidationError.InvalidDeliveryDate) -> {
                     Text(
                         text = "Data inválida (use dd/MM/yyyy)",
@@ -206,6 +209,7 @@ fun ProductReviewScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
+
                 state.validationErrors.contains(ValidationError.MondayNotAllowed) -> {
                     Text(
                         text = "Segunda-feira não é permitida",
@@ -213,6 +217,7 @@ fun ProductReviewScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
+
                 state.validationErrors.contains(ValidationError.FutureDateNotAllowed) -> {
                     Text(
                         text = "Data não pode estar no futuro",
@@ -225,7 +230,7 @@ fun ProductReviewScreen(
             // Classificação (dropdown)
             RatingDropdown(
                 selectedRating = state.rating,
-                onRatingSelected = { viewModel.handleScreenEvents(ProductReviewEvent.UpdateRating(it)) },
+                onRatingSelected = { viewModel.handleScreenEvents(StoreReviewEvent.UpdateRating(it)) },
                 isError = state.validationErrors.contains(ValidationError.EmptyRating)
             )
             if (state.validationErrors.contains(ValidationError.EmptyRating)) {
@@ -240,7 +245,7 @@ fun ProductReviewScreen(
 
             // Botão de envio
             Button(
-                onClick = { viewModel.handleScreenEvents(ProductReviewEvent.SubmitReview) },
+                onClick = { viewModel.handleScreenEvents(StoreReviewEvent.SubmitReview) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !state.isLoading
             ) {

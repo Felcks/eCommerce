@@ -1,12 +1,9 @@
 package com.vivacious.pokedex.domain.usecases
 
-import com.vivacious.pokedex.domain.models.ProductReview
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import com.vivacious.pokedex.domain.models.StoreReview
 
-interface ValidateProductReviewUseCase {
-    suspend operator fun invoke(review: ProductReview): ValidationResult
+interface ValidateStoreReviewUseCase {
+    suspend operator fun invoke(review: StoreReview): ValidationResult
 }
 
 data class ValidationResult(
