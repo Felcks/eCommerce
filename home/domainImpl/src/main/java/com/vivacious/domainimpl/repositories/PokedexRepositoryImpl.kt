@@ -34,6 +34,17 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun getFavoriteProducts(): Flow<List<Product>> {
         return productLocalDataSource.getFavoriteProducts()
     }
+    
+    override suspend fun removeProductFromFavorites(productId: Int): Flow<Boolean> {
+        return kotlinx.coroutines.flow.flow {
+            val result = productLocalDataSource.removeProductFromFavorites(productId)
+            emit(result)
+        }
+    }
+    
+    override suspend fun isProductFavorite(productId: Int): Boolean {
+        return productLocalDataSource.isProductFavorite(productId)
+    }
 
     companion object {
         const val PAGE_SIZE = 20

@@ -12,4 +12,6 @@ interface ProductRepository {
     suspend fun getProduct(productId: String): Flow<Resource<Product?>>
     suspend fun saveProductAsFavorite(product: Product): Flow<Boolean>
     suspend fun getFavoriteProducts(): Flow<List<Product>>
+    suspend fun removeProductFromFavorites(productId: Int): Flow<Boolean>
+    suspend fun isProductFavorite(productId: Int): Boolean
 }

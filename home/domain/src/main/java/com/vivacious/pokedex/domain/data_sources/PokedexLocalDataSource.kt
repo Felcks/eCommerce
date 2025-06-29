@@ -8,4 +8,6 @@ interface ProductLocalDataSource {
     fun saveProduct(product: Product): Flow<Boolean>
     fun getFavoriteProducts(): Flow<List<Product>>
     fun searchProducts(query: String): Flow<List<ProductSummary>>
+    suspend fun isProductFavorite(productId: Int): Boolean
+    suspend fun removeProductFromFavorites(productId: Int): Boolean
 }

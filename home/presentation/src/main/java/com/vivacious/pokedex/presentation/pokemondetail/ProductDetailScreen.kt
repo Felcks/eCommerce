@@ -124,7 +124,8 @@ fun ProductDetailScreen(
                 state.product != null -> {
                     ProductDetailWithCollapsingToolbar(
                         product = state.product!!,
-                        onAddFavoriteClick = { viewModel.handleScreenEvents(ProductDetailEvent.AddProductAsFavorite) },
+                        isFavorite = state.isFavorite,
+                        onToggleFavoriteClick = { viewModel.handleScreenEvents(ProductDetailEvent.ToggleFavorite) },
                         onBackClick = onBackClick
                     )
                 }
@@ -136,8 +137,9 @@ fun ProductDetailScreen(
 @Composable
 fun ProductDetailWithCollapsingToolbar(
     product: Product,
+    isFavorite: Boolean,
+    onToggleFavoriteClick: () -> Unit,
     onBackClick: () -> Unit,
-    onAddFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var backgroundColor by remember { mutableStateOf(Color(147, 201, 172)) }
@@ -360,10 +362,10 @@ fun ProductDetailWithCollapsingToolbar(
                         )
                         Spacer(modifier = Modifier.padding(vertical = 16.dp))
                         Button(
-                            onClick = { onAddFavoriteClick.invoke() },
+                            onClick = { onToggleFavoriteClick.invoke() },
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Adicionar aos favoritos")
+                            Text(if (isFavorite) "Remover dos favoritos" else "Adicionar aos favoritos")
                         }
                         Spacer(modifier = Modifier.padding(vertical = 32.dp))
                     }
@@ -402,8 +404,9 @@ private fun ProductDetailPreview() {
                 override val thumbnail: String = "https://dummyjson.com/image/i/products/1/thumbnail.jpg"
                 override val images: List<String> = listOf("https://dummyjson.com/image/i/products/1/1.jpg")
             },
-            onBackClick = {},
-            onAddFavoriteClick = {}
+            isFavorite = false,
+            onToggleFavoriteClick = {},
+            onBackClick = {}
         )
     }
 } 

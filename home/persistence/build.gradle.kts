@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.room.ktx)
     annotationProcessor(libs.room.annotation.processor)
     ksp(libs.room.ksp)
+    implementation(libs.gson)
 
     implementation(project(":home:domain"))
 }

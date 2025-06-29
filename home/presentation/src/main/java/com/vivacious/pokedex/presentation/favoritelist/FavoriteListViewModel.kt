@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import com.vivacious.pokedex.domain.models.Product
 import com.vivacious.pokedex.domain.models.ProductSummary
 import com.vivacious.pokedex.domain.usecases.GetFavoriteProductsUseCase
+import com.vivacious.pokedex.domain.usecases.RemoveFavoriteProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoriteListViewModel @Inject constructor(
     private val getFavoriteProductsUseCase: GetFavoriteProductsUseCase,
+    private val removeFavoriteProductUseCase: RemoveFavoriteProductUseCase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<FavoriteListState> = MutableStateFlow(FavoriteListState())
@@ -28,6 +30,7 @@ class FavoriteListViewModel @Inject constructor(
     fun handleScreenEvents(event: FavoriteListEvent) {
         when (event) {
             FavoriteListEvent.LoadFavoriteProducts -> loadFavoriteProducts()
+            is FavoriteListEvent.RemoveFavoriteProduct -> removeFavoriteProduct(event.productId)
         }
     }
 
@@ -44,6 +47,17 @@ class FavoriteListViewModel @Inject constructor(
                     _state.value =
                         _state.value.copy(loading = false, errorMessage = null, products = it)
                 }
+        }
+    }
+    
+    private fun removeFavoriteProduct(productId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            removeFavoriteProductUseCase(productId).collect { success ->
+                if (success) {
+                    // Recarregar a lista após remover
+                    loadFavoriteProducts()
+                }
+            }
         }
     }
 }

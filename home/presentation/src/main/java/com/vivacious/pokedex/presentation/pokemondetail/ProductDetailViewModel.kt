@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.vivacious.pokedex.domain.models.Product
 import com.vivacious.pokedex.domain.usecases.GetProductUseCase
 import com.vivacious.pokedex.domain.usecases.AddFavoriteProductUseCase
+import com.vivacious.pokedex.domain.usecases.RemoveFavoriteProductUseCase
+import com.vivacious.pokedex.domain.usecases.IsProductFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
     private val getProductUseCase: GetProductUseCase,
-    private val addFavoriteProductUseCase: AddFavoriteProductUseCase
+    private val addFavoriteProductUseCase: AddFavoriteProductUseCase,
+    private val removeFavoriteProductUseCase: RemoveFavoriteProductUseCase,
+    private val isProductFavoriteUseCase: IsProductFavoriteUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProductDetailState())
@@ -26,8 +30,8 @@ class ProductDetailViewModel @Inject constructor(
             is ProductDetailEvent.LoadProduct -> {
                 loadProduct(event.productId)
             }
-            ProductDetailEvent.AddProductAsFavorite -> {
-                addProductAsFavorite()
+            ProductDetailEvent.ToggleFavorite -> {
+                toggleFavorite()
             }
         }
     }
@@ -39,10 +43,16 @@ class ProductDetailViewModel @Inject constructor(
             getProductUseCase(productId).collect { result ->
                 when (result) {
                     is com.vivacious.pokedex.domain.wrapper.Resource.Success -> {
+                        val product = result.data
                         _state.value = _state.value.copy(
                             loading = false,
-                            product = result.data
+                            product = product
                         )
+                        
+                        // Verificar se o produto é favorito
+                        product?.let { 
+                            checkIfProductIsFavorite(it.id)
+                        }
                     }
                     is com.vivacious.pokedex.domain.wrapper.Resource.Error -> {
                         _state.value = _state.value.copy(
@@ -58,12 +68,33 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
-    private fun addProductAsFavorite() {
+    private fun checkIfProductIsFavorite(productId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val isFavorite = isProductFavoriteUseCase(productId)
+            _state.value = _state.value.copy(isFavorite = isFavorite)
+        }
+    }
+
+    private fun toggleFavorite() {
         val currentProduct = _state.value.product
+        val isCurrentlyFavorite = _state.value.isFavorite
+        
         if (currentProduct != null) {
             viewModelScope.launch(Dispatchers.IO) {
-                addFavoriteProductUseCase(currentProduct).collect { success ->
-                    // Handle success/failure if needed
+                if (isCurrentlyFavorite) {
+                    // Remover dos favoritos
+                    removeFavoriteProductUseCase(currentProduct.id).collect { success ->
+                        if (success) {
+                            _state.value = _state.value.copy(isFavorite = false)
+                        }
+                    }
+                } else {
+                    // Adicionar aos favoritos
+                    addFavoriteProductUseCase(currentProduct).collect { success ->
+                        if (success) {
+                            _state.value = _state.value.copy(isFavorite = true)
+                        }
+                    }
                 }
             }
         }
@@ -73,5 +104,6 @@ class ProductDetailViewModel @Inject constructor(
 data class ProductDetailState(
     val loading: Boolean = false,
     val product: Product? = null,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isFavorite: Boolean = false
 ) 
