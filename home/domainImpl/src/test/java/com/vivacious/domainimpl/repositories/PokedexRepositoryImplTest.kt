@@ -2,10 +2,11 @@ package com.vivacious.domainimpl.repositories
 
 import androidx.paging.PagingData
 import app.cash.turbine.test
-import com.vivacious.pokedex.domain.data_sources.ProductRemoteDataSource
-import com.vivacious.pokedex.domain.models.Product
-import com.vivacious.pokedex.domain.models.ProductSummary
-import com.vivacious.pokedex.domain.wrapper.Resource
+import com.vivacious.ecommerce.domain.data_sources.ProductRemoteDataSource
+import com.vivacious.ecommerce.domain.models.Product
+import com.vivacious.ecommerce.domain.models.ProductSummary
+import com.vivacious.ecommerce.domain.wrapper.Resource
+import com.vivacious.ecommerce.domainimpl.repositories.ProductRepositoryImpl
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

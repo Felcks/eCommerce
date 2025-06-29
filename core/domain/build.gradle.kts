@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.matheus.doglovers.core.domain"
+    namespace = "com.matheus.ecommerce.core.domain"
     compileSdk = 34
 
     defaultConfig {

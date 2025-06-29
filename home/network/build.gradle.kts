@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.vivacious.pokedex.network"
+    namespace = "com.vivacious.ecommerce.network"
     compileSdk = 34
 
     defaultConfig {
