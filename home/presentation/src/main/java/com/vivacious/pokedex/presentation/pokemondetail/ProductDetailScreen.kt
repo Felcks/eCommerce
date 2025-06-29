@@ -280,14 +280,14 @@ fun ProductDetailWithCollapsingToolbar(
                         ) {
                             if (product.discountPercentage > 0) {
                                 Text(
-                                    "R$ ${String.format("%.2f", product.price)}",
+                                    "${String.format("%.2f", product.price)}€",
                                     fontSize = 16.sp,
                                     color = Color.Gray,
                                     textDecoration = TextDecoration.LineThrough,
                                     modifier = Modifier.padding(end = 8.dp)
                                 )
                                 Text(
-                                    "R$ ${String.format("%.2f", product.price * (1 - product.discountPercentage / 100))}",
+                                    "${String.format("%.2f", product.price * (1 - product.discountPercentage / 100))}€",
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF2E7D32)
@@ -301,7 +301,7 @@ fun ProductDetailWithCollapsingToolbar(
                                 )
                             } else {
                                 Text(
-                                    "R$ ${String.format("%.2f", product.price)}",
+                                    "${String.format("%.2f", product.price)}€",
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF2E7D32)

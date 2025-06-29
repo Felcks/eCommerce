@@ -341,7 +341,7 @@ fun ProductCard(
                         .heightIn(min = 20.dp, max = 20.dp)
                 ) {
                     Text(
-                        "R$ ${String.format("%.2f", productSummary.price)}",
+                        "${String.format("%.2f", productSummary.price)}€",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF2E7D32)
