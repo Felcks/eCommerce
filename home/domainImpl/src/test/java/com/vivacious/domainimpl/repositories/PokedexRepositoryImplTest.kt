@@ -20,23 +20,23 @@ import org.junit.Test
 
 class ProductRepositoryImplTest {
 
-    private lateinit var mockPokedexRemoteDataSource: ProductRemoteDataSource
+    private lateinit var mockProductRemoteDataSource: ProductRemoteDataSource
     private lateinit var sut : ProductRepositoryImpl
 
     @Before
     fun setup() {
-        mockPokedexRemoteDataSource = mockk<ProductRemoteDataSource>()
-        sut = ProductRepositoryImpl(mockPokedexRemoteDataSource, mockk())
+        mockProductRemoteDataSource = mockk<ProductRemoteDataSource>()
+        sut = ProductRepositoryImpl(mockProductRemoteDataSource, mockk())
     }
 
     @Test
     fun `GIVEN no parameters WHEN getProducts() THEN returns correctly` () = runTest {
         val expected = mockk<PagingData<ProductSummary>>()
-        coEvery {  mockPokedexRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) } returns flowOf(expected)
+        coEvery {  mockProductRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) } returns flowOf(expected)
 
         sut.getProducts().test {
             assertEquals(expected, awaitItem())
-            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) }
+            coVerify(exactly = 1) { mockProductRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) }
             awaitComplete()
         }
     }
@@ -44,26 +44,26 @@ class ProductRepositoryImplTest {
     @Test
     fun `GIVEN error on dataSource WHEN getProducts() THEN throws error` () = runTest {
         val expected = Throwable()
-        coEvery {  mockPokedexRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) } returns flow {
+        coEvery {  mockProductRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) } returns flow {
             throw expected
         }
 
         sut.getProducts().test {
-            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) }
+            coVerify(exactly = 1) { mockProductRemoteDataSource.getProducts(ProductRepositoryImpl.PAGE_SIZE) }
             assertEquals(expected, awaitError())
         }
     }
 
     @Test
-    fun `GIVEN pokemonId WHEN getProduct() THEN returns correctly` () = runTest {
+    fun `GIVEN productId WHEN getProduct() THEN returns correctly` () = runTest {
         val expected = mockk<Resource<Product>>()
-        val pokemonId = "pokemonId"
+        val productId = "productId"
 
-        coEvery {  mockPokedexRemoteDataSource.getProduct(pokemonId) } returns flowOf(expected)
+        coEvery {  mockProductRemoteDataSource.getProduct(productId) } returns flowOf(expected)
 
-        sut.getProduct(pokemonId).test {
+        sut.getProduct(productId).test {
             assertEquals(expected, awaitItem())
-            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getProduct(pokemonId) }
+            coVerify(exactly = 1) { mockProductRemoteDataSource.getProduct(productId) }
             awaitComplete()
         }
     }
@@ -71,13 +71,13 @@ class ProductRepositoryImplTest {
     @Test
     fun `GIVEN error on dataSource WHEN getProduct() THEN throws error` () = runTest {
         val expected = Throwable()
-        val pokemonId = "pokemonId"
-        coEvery {  mockPokedexRemoteDataSource.getProduct(pokemonId) } returns flow {
+        val productId = "productId"
+        coEvery {  mockProductRemoteDataSource.getProduct(productId) } returns flow {
             throw expected
         }
 
-        sut.getProduct(pokemonId).test {
-            coVerify(exactly = 1) { mockPokedexRemoteDataSource.getProduct(pokemonId) }
+        sut.getProduct(productId).test {
+            coVerify(exactly = 1) { mockProductRemoteDataSource.getProduct(productId) }
             assertEquals(expected, awaitError())
         }
     }

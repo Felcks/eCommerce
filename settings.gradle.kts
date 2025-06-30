@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Pokedex"
+rootProject.name = "Ecommerce"
 include(":app")
 include(":home:domain")
 include(":home:network")

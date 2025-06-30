@@ -57,7 +57,7 @@
     <string name="phone_invalid">Apenas dígitos são permitidos</string>
     <string name="promo_code_label">Código promocional</string>
     <string name="promo_code_required">Código promocional é obrigatório</string>
-    <string name="promo_code_invalid">Apenas letras maiúsculas e hífens, 3-7 caracteres</string>
+    <string name="promo_code_invalid">Apenas letras maiúsculas e hífens, 3–7 caracteres</string>
     <string name="delivery_date_label">Data de entrega (dd/MM/yyyy)</string>
     <string name="date_required">Data é obrigatória</string>
     <string name="date_invalid">Data inválida (use dd/MM/yyyy)</string>
@@ -80,33 +80,12 @@
     <string name="email_invalid_validation">Email inválido</string>
     <string name="phone_required_validation">Telefone é obrigatório</string>
     <string name="phone_invalid_validation">Telefone inválido</string>
-    <string name="promo_code_invalid_validation">Código promocional deve ter 6-10 caracteres alfanuméricos</string>
+    <string name="promo_code_invalid_validation">Código promocional deve ter 3–7 caracteres (letras maiúsculas ou -)</string>
     <string name="date_required_validation">Data é obrigatória</string>
     <string name="future_date_validation">Data não pode ser futura</string>
     <string name="invalid_date_format">Data inválida. Use o formato dd/MM/yyyy</string>
     <string name="rating_required_validation">Rating é obrigatório</string>
 
-    <!-- Legacy (to be removed) -->
-    <string name="weight">Peso</string>
-    <string name="height">Altura</string>
+    <!-- Others -->
     <string name="unexpected_error_message">Erro inesperado</string>
-    <string name="catch_pokemon">Adicionar aos Favoritos</string>
-    <string name="no_products_found">Nenhum produto encontrado</string>
-    <string name="loading_products">Carregando produtos...</string>
-    <string name="error_loading_products">Erro ao carregar produtos</string>
-    <string name="favorite_list">Lista de Favoritos</string>
-    <string name="no_favorites">Nenhum favorito adicionado</string>
-    <string name="product_detail">Detalhes do Produto</string>
-    <string name="original_price">Preço Original</string>
-    <string name="discounted_price">Preço com Desconto</string>
-    <string name="discount_percentage">Desconto</string>
-    <string name="stock">Estoque</string>
-    <string name="brand">Marca</string>
-    <string name="category">Categoria</string>
-    <string name="description">Descrição</string>
-    <string name="validate_form">Validar Formulário</string>
-    <string name="email">Email</string>
-    <string name="phone">Telefone</string>
-    <string name="promo_code">Código Promocional (opcional)</string>
-    <string name="date">Data (dd/MM/yyyy)</string>
 </resources>

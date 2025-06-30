@@ -27,7 +27,7 @@ class GetProductsUseCaseImplTest {
     }
 
     @Test
-    fun `GIVEN repository returns correct WHEN getPokemon THEN returns success`() = runTest {
+    fun `GIVEN repository returns correct WHEN getProduct THEN returns success`() = runTest {
         val expected = mockk<PagingData<ProductSummary>>()
         coEvery { mockRepository.getProducts() } returns flowOf(expected)
 
@@ -39,7 +39,7 @@ class GetProductsUseCaseImplTest {
     }
 
     @Test
-    fun `GIVEN repository throws error WHEN getPokemon THEN returns error`() = runTest {
+    fun `GIVEN repository throws error WHEN getProduct THEN returns error`() = runTest {
         val expected = Throwable()
         coEvery { mockRepository.getProducts() } returns flow {
             throw expected
